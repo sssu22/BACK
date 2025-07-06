@@ -3,3 +3,12 @@ spring:
     name: trendlog
   profiles:
     active: local
+  data:
+    redis:
+      host: localhost
+      port: 6379
+#      password: (운영 배포용 시 주석 해제)
+jwt:
+  secret: your-super-secret-key-your-super-secret-key
+  access-token-validity: 900000   # 15분
+  refresh-token-validity: 604800000 # 7일
