@@ -33,8 +33,6 @@ public interface AuthApiDoc {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류 (COMMON-005)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-//            @ApiResponse(responseCode = "404", description = "존재하지 않는 회원 (USER-001)",
-//                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     ResponseEntity<DataResponse<LoginResponse>> login(@Valid @RequestBody UserLoginRequest request);
 

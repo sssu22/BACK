@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -38,7 +39,7 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime signDate;
 
-    private Integer birth;
+    private LocalDate birth;
 
     @Column(length = 100)
     private String address;

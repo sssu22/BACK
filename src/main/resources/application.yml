@@ -12,3 +12,8 @@ jwt:
   secret: your-super-secret-key-your-super-secret-key
   access-token-validity: 900000   # 15분
   refresh-token-validity: 604800000 # 7일
+gcp:
+  project-id: uida-3051b
+  credentials:
+    location: classpath:uida-3051b-c54f4eb20081.json
+  bucket: trendlog-bucket

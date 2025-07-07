@@ -1,8 +1,6 @@
 package com.example.trendlog.global.security.userdetails;
 
 import com.example.trendlog.domain.User;
-import com.example.trendlog.global.exception.AppException;
-import com.example.trendlog.global.exception.ErrorCode;
 import com.example.trendlog.global.exception.user.UserNotFoundException;
 import com.example.trendlog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
