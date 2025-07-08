@@ -3,7 +3,7 @@ package com.example.trendlog.demo;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class TestDbRunner implements CommandLineRunner {
     private final TestEntityRepository repository;
 

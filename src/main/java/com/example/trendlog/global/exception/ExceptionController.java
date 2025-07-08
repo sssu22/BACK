@@ -1,10 +1,13 @@
 package com.example.trendlog.global.exception;
 
 import com.example.trendlog.global.dto.ErrorResponse;
+import com.example.trendlog.global.exception.code.CommonErrorCode;
+import com.example.trendlog.global.exception.code.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -18,7 +21,7 @@ public class ExceptionController {
         log.error("처리되지 않은 예외 발생: ", e);
         log.error("에러가 발생한 지점 {}, {}", request.getMethod(), request.getRequestURI());
         ErrorResponse errorResponse = ErrorResponse.of(
-                ErrorCode.INTERNAL_SERVER_ERROR,
+                CommonErrorCode.INTERNAL_SERVER_ERROR,
                 request
         );
         return ResponseEntity
@@ -33,6 +36,20 @@ public class ExceptionController {
         ErrorResponse errorResponse = ErrorResponse.of(e.getErrorCode(), request);
         return ResponseEntity
                 .status(e.getErrorCode().getHttpStatus())
+                .body(errorResponse);
+    }
+
+    // Validation 예외 처리
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException e, HttpServletRequest request) {
+        String errorMessage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        log.warn("Validation error: {}", errorMessage);
+        ErrorResponse errorResponse = ErrorResponse.of(
+                CommonErrorCode.INVALID_PARAMETER,
+                request
+        );
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(errorResponse);
     }
 }

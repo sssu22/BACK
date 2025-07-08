@@ -1,5 +1,6 @@
 package com.example.trendlog.global.exception;
 
+import com.example.trendlog.global.exception.code.ErrorCode;
 import lombok.Getter;
 
 @Getter
