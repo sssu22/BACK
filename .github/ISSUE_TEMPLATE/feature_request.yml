@@ -1,6 +1,6 @@
 name: "🛠 BE Feature Request"
 description: "백엔드 신규 기능 개발 요청 또는 시스템 개선 제안"
-title: "[BE] "
+title: "[Feat] "
 labels: ["backend", "feature"]
 body:
   - type: textarea
