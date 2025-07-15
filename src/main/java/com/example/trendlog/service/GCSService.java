@@ -42,6 +42,7 @@ public class GCSService {
                     .setContentType(contentType)
                     .build();
             storage.create(blobInfo, fileBytes);
+            storage.createAcl(blobId, Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
             return String.format("https://storage.googleapis.com/%s/%s", bucketName, fileName);
         } catch (StorageException e) {
             throw new AppException(FileErrorCode.UPLOAD_FAIL); // FILE-001

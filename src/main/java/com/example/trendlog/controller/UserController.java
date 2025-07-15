@@ -11,6 +11,7 @@ import com.example.trendlog.service.UserService;
 import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,8 +49,9 @@ public class UserController implements UserApiDoc {
         return ResponseEntity.ok(DataResponse.ok());
     }
 
-    @PostMapping("/profile-image")
-    public ResponseEntity<DataResponse<String>> uploadProfileImage(Principal principal, @RequestPart("file") MultipartFile file){
+//    @PostMapping("/profile-image")
+@PostMapping(value = "/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<DataResponse<String>> uploadProfileImage(Principal principal, @RequestParam("file") MultipartFile file){
 //        String imageUrl=userService.updateProfileImage(principal,file);
         String imageUrl = userService.uploadTempProfileImage(principal, file);
         return ResponseEntity.ok(DataResponse.from(imageUrl));

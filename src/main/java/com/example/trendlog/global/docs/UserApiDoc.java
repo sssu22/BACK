@@ -6,13 +6,16 @@ import com.example.trendlog.dto.user.UserUpdateRequest;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.global.dto.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -70,7 +73,11 @@ public interface UserApiDoc {
     })
     public ResponseEntity<DataResponse<Void>> deleteUser(Principal principal);
 
-    @Operation(summary = "프로필 이미지 업로드", description = "현재 url로 이미지를 업도르 합니다.")
+    @Operation(
+            summary = "프로필 이미지 업로드",
+            description = "현재 url로 이미지를 업로드 합니다."
+    )
+
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "400", description = "존재하지 않는 회원 (USER-001)",
@@ -85,5 +92,14 @@ public interface UserApiDoc {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<DataResponse<String>> uploadProfileImage(Principal principal,
+                                                                   @Parameter(
+                                                                           name = "file",
+                                                                           description = "업로드할 이미지 파일",
+                                                                           required = true,
+                                                                           content = @Content(
+                                                                                   mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
+                                                                                   schema = @Schema(type = "string", format = "binary")
+                                                                           )
+                                                                   )
                                                                    @RequestPart("file") MultipartFile file);
 }

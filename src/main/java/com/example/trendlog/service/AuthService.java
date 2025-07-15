@@ -9,6 +9,7 @@ import com.example.trendlog.global.security.jwt.JwtTokenProvider;
 import com.example.trendlog.repository.UserRepository;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -16,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -68,6 +69,7 @@ public class AuthService {
         }catch(AuthenticationException e){
             throw new InvalidLoginInfoException(); // USER-002
         }catch (Exception e){
+            log.error("로그인 실패", e);
             throw new AppException(CommonErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
