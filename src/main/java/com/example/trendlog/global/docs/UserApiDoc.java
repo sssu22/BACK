@@ -1,15 +1,14 @@
 package com.example.trendlog.global.docs;
 
-import com.example.trendlog.dto.user.PasswordChangeRequest;
-import com.example.trendlog.dto.user.UserInfoResponse;
-import com.example.trendlog.dto.user.UserUpdateRequest;
+import com.example.trendlog.dto.request.user.PasswordChangeRequest;
+import com.example.trendlog.dto.response.user.UserInfoResponse;
+import com.example.trendlog.dto.request.user.UserUpdateRequest;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.global.dto.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -27,7 +26,7 @@ import java.security.Principal;
 public interface UserApiDoc {
     @Operation(summary = "내 정보 조회", description = "로그인된 사용자의 정보를 조회합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "200", description = "내 정보 조회 성공"),
             @ApiResponse(responseCode = "400", description = "존재하지 않는 회원 (USER-001)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자 (USER-011)",
@@ -37,7 +36,7 @@ public interface UserApiDoc {
 
     @Operation(summary = "회원 정보 수정", description = "사용자의 정보를 수정합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "200", description = "회원 정보 수정 성공"),
             @ApiResponse(responseCode = "400", description = "존재하지 않는 회원 (USER-001)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "400", description = "중복된 닉네임 (USER-007)",
@@ -51,7 +50,7 @@ public interface UserApiDoc {
 
     @Operation(summary = "비밀번호 수정", description = "새 비밀번호로 사용자 비밀번호를 변경합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "200", description = "비밀번호 수정 성공"),
             @ApiResponse(responseCode = "400", description = "존재하지 않는 회원 (USER-001)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자 (USER-011)",
@@ -63,7 +62,7 @@ public interface UserApiDoc {
 
     @Operation(summary = "회원 탈퇴", description = "현재 로그인한 사용자를 삭제합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공"),
             @ApiResponse(responseCode = "400", description = "존재하지 않는 회원 (USER-001)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자 (USER-011)",
@@ -77,9 +76,8 @@ public interface UserApiDoc {
             summary = "프로필 이미지 업로드",
             description = "현재 url로 이미지를 업로드 합니다."
     )
-
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "200", description = "프로필 이미지 업로드 성공"),
             @ApiResponse(responseCode = "400", description = "존재하지 않는 회원 (USER-001)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자 (USER-011)",

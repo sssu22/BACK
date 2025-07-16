@@ -1,15 +1,14 @@
 package com.example.trendlog.controller;
 
-import com.example.trendlog.dto.user.PasswordChangeRequest;
-import com.example.trendlog.dto.user.UserInfoResponse;
-import com.example.trendlog.dto.user.UserUpdateRequest;
+import com.example.trendlog.dto.request.user.PasswordChangeRequest;
+import com.example.trendlog.dto.response.user.UserInfoResponse;
+import com.example.trendlog.dto.request.user.UserUpdateRequest;
 import com.example.trendlog.global.docs.UserApiDoc;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.service.GCSService;
 import com.example.trendlog.service.RefreshTokenService;
 import com.example.trendlog.service.UserService;
 import jakarta.validation.Valid;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/users")

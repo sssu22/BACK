@@ -1,8 +1,8 @@
 package com.example.trendlog.service;
 
 import com.example.trendlog.domain.User;
-import com.example.trendlog.dto.user.UserInfoResponse;
-import com.example.trendlog.dto.user.UserUpdateRequest;
+import com.example.trendlog.dto.response.user.UserInfoResponse;
+import com.example.trendlog.dto.request.user.UserUpdateRequest;
 import com.example.trendlog.global.exception.AppException;
 import com.example.trendlog.global.exception.code.UserErrorCode;
 import com.example.trendlog.global.exception.user.UserNotFoundException;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.util.UUID;
 

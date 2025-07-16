@@ -1,6 +1,10 @@
 package com.example.trendlog.global.docs;
 
-import com.example.trendlog.dto.auth.*;
+import com.example.trendlog.dto.request.auth.TokenRefreshRequest;
+import com.example.trendlog.dto.request.auth.UserLoginRequest;
+import com.example.trendlog.dto.request.auth.UserSignupRequest;
+import com.example.trendlog.dto.response.auth.LoginResponse;
+import com.example.trendlog.dto.response.auth.TokenRefreshResponse;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.global.dto.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;

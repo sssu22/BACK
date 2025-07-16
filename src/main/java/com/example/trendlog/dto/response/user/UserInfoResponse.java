@@ -1,4 +1,4 @@
-package com.example.trendlog.dto.user;
+package com.example.trendlog.dto.response.user;
 
 import com.example.trendlog.domain.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
