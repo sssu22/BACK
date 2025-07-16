@@ -103,7 +103,7 @@ public class UserService {
             throw new AppException(UserErrorCode.SAME_AS_OLD_PASSWORD); // USER-015
         }
 
-        user.setPassword(passwordEncoder.encode(newPassword));
+        user.updatePassword(passwordEncoder.encode(newPassword));
     }
     public String uploadTempProfileImage(Principal principal, MultipartFile file) {
         UUID userId = getUserByEmail(principal.getName()).getId();

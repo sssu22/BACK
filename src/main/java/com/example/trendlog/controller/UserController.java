@@ -3,7 +3,7 @@ package com.example.trendlog.controller;
 import com.example.trendlog.dto.request.user.PasswordChangeRequest;
 import com.example.trendlog.dto.response.user.UserInfoResponse;
 import com.example.trendlog.dto.request.user.UserUpdateRequest;
-import com.example.trendlog.global.docs.UserApiDoc;
+import com.example.trendlog.global.docs.UserSwaggerSpec;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.service.GCSService;
 import com.example.trendlog.service.RefreshTokenService;
@@ -20,7 +20,7 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
-public class UserController implements UserApiDoc {
+public class UserController implements UserSwaggerSpec {
     private final UserService userService;
     private final GCSService gcsService;
     private final RefreshTokenService refreshTokenService;

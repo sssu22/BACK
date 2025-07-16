@@ -5,7 +5,7 @@ import com.example.trendlog.dto.request.auth.UserLoginRequest;
 import com.example.trendlog.dto.request.auth.UserSignupRequest;
 import com.example.trendlog.dto.response.auth.LoginResponse;
 import com.example.trendlog.dto.response.auth.TokenRefreshResponse;
-import com.example.trendlog.global.docs.AuthApiDoc;
+import com.example.trendlog.global.docs.AuthSwaggerSpec;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.service.AuthService;
 import jakarta.validation.Valid;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
-public class AuthController implements AuthApiDoc {
+public class AuthController implements AuthSwaggerSpec {
     private final AuthService authService;
     /**
      * 회원가입

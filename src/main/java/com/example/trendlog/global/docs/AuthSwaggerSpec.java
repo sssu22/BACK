@@ -21,7 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 @Tag(name = "Auth", description = "인증 관련 API")
-public interface AuthApiDoc {
+public interface AuthSwaggerSpec {
     @Operation(summary = "회원가입", description = "이메일, 비밀번호를 이용해 회원가입을 진행합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "회원가입 성공"),

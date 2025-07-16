@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.security.Principal;
 @SecurityRequirement(name = "bearerAuth")
 @Tag(name = "Users", description = "유저 관련 API")
-public interface UserApiDoc {
+public interface UserSwaggerSpec {
     @Operation(summary = "내 정보 조회", description = "로그인된 사용자의 정보를 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "내 정보 조회 성공"),
