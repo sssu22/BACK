@@ -1,7 +1,11 @@
 package com.example.trendlog.service;
 
 import com.example.trendlog.domain.User;
-import com.example.trendlog.dto.auth.*;
+import com.example.trendlog.dto.request.auth.TokenRefreshRequest;
+import com.example.trendlog.dto.request.auth.UserLoginRequest;
+import com.example.trendlog.dto.request.auth.UserSignupRequest;
+import com.example.trendlog.dto.response.auth.LoginResponse;
+import com.example.trendlog.dto.response.auth.TokenRefreshResponse;
 import com.example.trendlog.global.exception.AppException;
 import com.example.trendlog.global.exception.code.CommonErrorCode;
 import com.example.trendlog.global.exception.user.*;
@@ -35,16 +39,8 @@ public class AuthService {
         if(userRepository.existsByEmail(request.getEmail())){
             throw new EmailAlreadyExistsException(); // USER-004
         }
-        User user=User.builder()
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .name(request.getName())
-                .provider("local")
-                .signDate(LocalDateTime.now())
-                .publicProfile(true)
-                .locationTracing(false)
-                .alarm(true)
-                .build();
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        User user =request.toEntity(encodedPassword);
         userRepository.save(user);
     }
     /**
