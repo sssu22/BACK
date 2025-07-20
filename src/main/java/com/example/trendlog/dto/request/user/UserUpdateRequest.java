@@ -1,4 +1,4 @@
-package com.example.trendlog.dto.user;
+package com.example.trendlog.dto.request.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Size;

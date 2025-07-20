@@ -55,4 +55,9 @@ public class User {
 
     @Column(nullable = false)
     private Boolean alarm;
+
+    public void updatePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
 }

@@ -1,6 +1,10 @@
 package com.example.trendlog.global.docs;
 
-import com.example.trendlog.dto.auth.*;
+import com.example.trendlog.dto.request.auth.TokenRefreshRequest;
+import com.example.trendlog.dto.request.auth.UserLoginRequest;
+import com.example.trendlog.dto.request.auth.UserSignupRequest;
+import com.example.trendlog.dto.response.auth.LoginResponse;
+import com.example.trendlog.dto.response.auth.TokenRefreshResponse;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.global.dto.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,7 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 @Tag(name = "Auth", description = "인증 관련 API")
-public interface AuthApiDoc {
+public interface AuthSwaggerSpec {
     @Operation(summary = "회원가입", description = "이메일, 비밀번호를 이용해 회원가입을 진행합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "회원가입 성공"),

@@ -1,4 +1,4 @@
-package com.example.trendlog.dto.auth;
+package com.example.trendlog.dto.response.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.example.trendlog.dto.user;
+package com.example.trendlog.dto.request.user;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

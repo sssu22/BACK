@@ -1,27 +1,26 @@
 package com.example.trendlog.controller;
 
-import com.example.trendlog.dto.user.PasswordChangeRequest;
-import com.example.trendlog.dto.user.UserInfoResponse;
-import com.example.trendlog.dto.user.UserUpdateRequest;
-import com.example.trendlog.global.docs.UserApiDoc;
+import com.example.trendlog.dto.request.user.PasswordChangeRequest;
+import com.example.trendlog.dto.response.user.UserInfoResponse;
+import com.example.trendlog.dto.request.user.UserUpdateRequest;
+import com.example.trendlog.global.docs.UserSwaggerSpec;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.service.GCSService;
 import com.example.trendlog.service.RefreshTokenService;
 import com.example.trendlog.service.UserService;
 import jakarta.validation.Valid;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
-public class UserController implements UserApiDoc {
+public class UserController implements UserSwaggerSpec {
     private final UserService userService;
     private final GCSService gcsService;
     private final RefreshTokenService refreshTokenService;
@@ -48,8 +47,9 @@ public class UserController implements UserApiDoc {
         return ResponseEntity.ok(DataResponse.ok());
     }
 
-    @PostMapping("/profile-image")
-    public ResponseEntity<DataResponse<String>> uploadProfileImage(Principal principal, @RequestPart("file") MultipartFile file){
+//    @PostMapping("/profile-image")
+@PostMapping(value = "/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<DataResponse<String>> uploadProfileImage(Principal principal, @RequestParam("file") MultipartFile file){
 //        String imageUrl=userService.updateProfileImage(principal,file);
         String imageUrl = userService.uploadTempProfileImage(principal, file);
         return ResponseEntity.ok(DataResponse.from(imageUrl));

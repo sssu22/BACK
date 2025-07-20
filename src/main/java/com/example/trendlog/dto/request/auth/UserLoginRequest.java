@@ -1,4 +1,4 @@
-package com.example.trendlog.dto.auth;
+package com.example.trendlog.dto.request.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
