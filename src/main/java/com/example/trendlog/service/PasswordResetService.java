@@ -61,7 +61,7 @@ public class PasswordResetService {
         String email=redisTemplate.opsForValue().get(redisKey);
 
         if (email==null){
-            throw new AppException(UserErrorCode.PASSWORD_RESET_TOKEN_EXPIRED);
+            throw new AppException(UserErrorCode.PASSWORD_RESET_TOKEN_EXPIRED); //USER-017
         }
 
         User user=userRepository.findByEmail(email)
