@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "hot_trend")
-public class HotTrend {
+@Table(name = "recent_trend")
+public class RecentTrend {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,7 +32,7 @@ public class HotTrend {
     @Column(nullable=false)
     private int increaseScore;
 
-    public HotTrend(String name, int trendScore, LocalDateTime period, Trend trend, int increaseScore) {
+    public RecentTrend(String name, int trendScore, LocalDateTime period, Trend trend, int increaseScore) {
         this.name = name;
         this.trendScore = trendScore;
         this.period = period;
@@ -40,8 +40,8 @@ public class HotTrend {
         this.increaseScore = increaseScore;
     }
 
-    public static HotTrend of(Trend trend, int increaseScore, LocalDateTime now) {
-        return new HotTrend(
+    public static RecentTrend of(Trend trend, int increaseScore, LocalDateTime now) {
+        return new RecentTrend(
                 trend.getTitle(),
                 trend.getScore(),
                 now,

@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,6 +35,9 @@ public class TrendComment {
 
     @Column(nullable = false)
     private int likeCount = 0;
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TrendCommentLike> likes = new ArrayList<>();
 
     public static TrendComment of(User user, Trend trend, String content) {
         TrendComment comment = new TrendComment();

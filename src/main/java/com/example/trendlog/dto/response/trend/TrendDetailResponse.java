@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Getter
+@Builder
 public class TrendDetailResponse {
     private final Long id;
     private final String title;
@@ -25,9 +26,9 @@ public class TrendDetailResponse {
     private final List<String> tags;
     private final List<SimilarTrendDto> similarTrends;
     private final LocalDateTime createdAt;
+    private final List<TrendCommentDto> comments;
 
-    @Builder
-    public TrendDetailResponse(Long id, String title, String description, TrendCategory category, Integer score, Integer viewCount, Integer likeCount, Integer commentCount, Integer snsMentions, String peakPeriod, List<String> tags, List<SimilarTrendDto> similarTrends, LocalDateTime createdAt) {
+    public TrendDetailResponse(Long id, String title, String description, TrendCategory category, Integer score, Integer viewCount, Integer likeCount, Integer commentCount, Integer snsMentions, String peakPeriod, List<String> tags, List<SimilarTrendDto> similarTrends, LocalDateTime createdAt,List<TrendCommentDto> comments) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -41,9 +42,10 @@ public class TrendDetailResponse {
         this.tags = tags;
         this.similarTrends = similarTrends;
         this.createdAt = createdAt;
+        this.comments = comments;
     }
 
-    public static TrendDetailResponse from(Trend trend) {
+    public static TrendDetailResponse from(Trend trend, List<TrendCommentDto> comments) {
         return TrendDetailResponse.builder()
                 .id(trend.getId())
                 .title(trend.getTitle())
@@ -63,6 +65,7 @@ public class TrendDetailResponse {
                                 .collect(Collectors.toList())
                                 : List.of()
                 )
+                .comments(comments)
                 .createdAt(trend.getCreatedAt())
                 .build();
 

@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface TrendCommentRepository extends JpaRepository<TrendComment, Long> {
-    List<TrendComment> findByTrendOrderByCreatedAtAsc(Trend trend);
+    List<TrendComment> findByTrendOrderByCreatedAtDesc(Trend trend);
 }

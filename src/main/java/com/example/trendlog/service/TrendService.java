@@ -3,10 +3,9 @@ package com.example.trendlog.service;
 import com.example.trendlog.domain.trend.*;
 import com.example.trendlog.domain.User;
 import com.example.trendlog.dto.request.trend.TrendCreateRequest;
-import com.example.trendlog.dto.response.trend.HotTrendResponse;
-import com.example.trendlog.dto.response.trend.TrendDetailResponse;
-import com.example.trendlog.dto.response.trend.TrendListPageResponse;
-import com.example.trendlog.dto.response.trend.TrendListResponse;
+import com.example.trendlog.dto.response.trend.*;
+import com.example.trendlog.global.exception.AppException;
+import com.example.trendlog.global.exception.code.TrendErrorCode;
 import com.example.trendlog.global.exception.trend.CommentNotFoundException;
 import com.example.trendlog.global.exception.trend.DuplicateTrendException;
 import com.example.trendlog.global.exception.trend.InvalidCategoryException;
@@ -38,7 +37,7 @@ public class TrendService {
     private final TrendLikeRepository trendLikeRepository;
     private final TrendScrapRepository trendScrapRepository;
     private final PopularTrendRepository popularTrendRepository;
-    private final HotTrendRepository hotTrendRepository;
+    private final RecentTrendRepository recentTrendRepository;
     private final TrendCommentRepository trendCommentRepository;
     private final TrendCommentLikeReposity trendCommentLikeReposity;
 
@@ -77,16 +76,27 @@ public class TrendService {
     /**
      * 트렌드 상세 조회
      */
+    @Transactional
     public TrendDetailResponse getTrendDetail(Long id) {
         Trend trend = trendRepository.findById(id)
                 .orElseThrow(TrendNotFoundException::new);//TREND-002
-        return TrendDetailResponse.from(trend);
+
+        trend.increaseViewCount();
+
+        List<TrendCommentDto> comments=trendCommentRepository.findByTrendOrderByCreatedAtDesc(trend).stream()
+                .map(TrendCommentDto::from)
+                .collect(Collectors.toList());
+
+        return TrendDetailResponse.from(trend,comments);
     }
 
     /**
      * 트렌드 목록
      */
     public TrendListPageResponse getTrendList(Pageable pageable) {
+        if (pageable.getPageNumber() < 0 || pageable.getPageSize() <= 0) {
+            throw new AppException(TrendErrorCode.INVALID_PAGE_REQUEST);
+        }
         Page<Trend> page=trendRepository.findAll(pageable);
         return TrendListPageResponse.from(page);
     }
@@ -103,6 +113,7 @@ public class TrendService {
                 .orElseThrow(UserNotFoundException::new); //USER-001
 
         Optional<TrendLike> existingLike=trendLikeRepository.findByUserAndTrend(user,trend);
+
         if(existingLike.isPresent()){
             trendLikeRepository.delete(existingLike.get());
             trend.decreaseLikeCount();
@@ -123,6 +134,7 @@ public class TrendService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new); //USER-001
+
         Optional<TrendScrap> existingScrap=trendScrapRepository.findByUserAndTrend(user,trend);
         if(existingScrap.isPresent()){
             trendScrapRepository.delete(existingScrap.get());
@@ -154,14 +166,14 @@ public class TrendService {
     /**
      * 최고 트렌드 목록 반환
      */
-    public List<TrendListResponse> getLatestPopularTrends(){
+    public List<PopularTrendResponse> getPopularTrends(){
         LocalDateTime latestPeriod=popularTrendRepository.findLatestPeriod();
         if(latestPeriod==null){
             return Collections.emptyList(); // 아직 저장된 게 없는 경우
         }
         List<PopularTrend> popularTrends = popularTrendRepository.findTop5ByPeriodOrderByTrendScoreDesc(latestPeriod);
         return popularTrends.stream()
-                .map(popularTrend -> TrendListResponse.from(popularTrend.getTrend()))
+                .map(PopularTrendResponse::from)
                 .toList();
     }
 
@@ -173,32 +185,35 @@ public class TrendService {
     public void updateRecentTrends(){
         LocalDateTime now = LocalDateTime.now();
 
-        LocalDateTime sixHoursAge=now.minusHours(6);
+        List<Trend> allTrends=trendRepository.findAll();
 
-        List<Trend> trends = trendRepository.findTop3ByScoreIncrease(PageRequest.of(0, 3));
-
-        List<HotTrend> hotTrends = trends.stream()
-                .map(trend->{
-                    int increaseScore=trend.getScore()-trend.getPreviousScore();
-                    trend.setPreviousScore(trend.getScore());
-                    return HotTrend.of(trend,increaseScore,now);
+        List<RecentTrend> recentTrends = allTrends.stream()
+                .filter(trend -> trend.getPreviousScore() != null)
+                .map(trend -> {
+                    int increase = trend.getScore() - trend.getPreviousScore();
+                    return RecentTrend.of(trend, increase, now);
                 })
-                .collect(Collectors.toList());
+                .sorted(Comparator.comparingInt(RecentTrend::getIncreaseScore).reversed()
+                        .thenComparing((RecentTrend rt) -> rt.getTrend().getScore(), Comparator.reverseOrder()))
+                .limit(3)
+                .toList();
 
-        hotTrendRepository.saveAll(hotTrends);
+        recentTrendRepository.saveAll(recentTrends);
+
+        allTrends.forEach(trend -> trend.setPreviousScore(trend.getScore()));
     }
 
     /**
      * 최근 트렌드 조회
      */
-    public List<HotTrendResponse> getHotTrends(){
-        LocalDateTime latestPeriod = hotTrendRepository.findLatestPeriod();
+    public List<RecentTrendResponse> getRecentTrends(){
+        LocalDateTime latestPeriod = recentTrendRepository.findLatestPeriod();
         if(latestPeriod==null){
             return Collections.emptyList();
         }
-        List<HotTrend> hotTrends=hotTrendRepository.findTop3ByPeriodOrderByIncreaseScoreDesc(latestPeriod);
-        return hotTrends.stream()
-                .map(HotTrendResponse::from)
+        List<RecentTrend> recentTrends =recentTrendRepository.findTop3ByPeriodOrderByIncreaseScoreDesc(latestPeriod);
+        return recentTrends.stream()
+                .map(RecentTrendResponse::from)
                 .toList();
     }
 
@@ -212,8 +227,11 @@ public class TrendService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new); //USER-001
+
         TrendComment comment = TrendComment.of(user,trend,content);
+
         trend.increaseCommentCount();
+
         trendCommentRepository.save(comment);
     }
     /**
