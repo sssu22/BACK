@@ -15,7 +15,8 @@ public enum TrendErrorCode implements ErrorCode {
     UNAUTHORIZED_COMMENT_DELETE(HttpStatus.FORBIDDEN, "해당 댓글을 삭제할 권한이 없습니다.", "TREND-006"),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "삭제할 댓글이 존재하지 않습니다.", "TREND-007"),
     LIKE_TREND_NOT_FOUND(HttpStatus.NOT_FOUND, "좋아요 대상 트렌드가 존재하지 않습니다.", "TREND-008"),
-    SCRAP_TREND_NOT_FOUND(HttpStatus.NOT_FOUND, "스크랩 대상 트렌드가 존재하지 않습니다.", "TREND-009");
+    SCRAP_TREND_NOT_FOUND(HttpStatus.NOT_FOUND, "스크랩 대상 트렌드가 존재하지 않습니다.", "TREND-009"),
+    INVALID_CATEGORY(HttpStatus.BAD_REQUEST, "유효하지 않은 트렌드 카테고리입니다.", "TREND-010");
 
     private final HttpStatus httpStatus;
     private final String message;

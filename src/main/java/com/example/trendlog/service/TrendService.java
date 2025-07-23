@@ -7,12 +7,17 @@ import com.example.trendlog.dto.response.trend.HotTrendResponse;
 import com.example.trendlog.dto.response.trend.TrendDetailResponse;
 import com.example.trendlog.dto.response.trend.TrendListPageResponse;
 import com.example.trendlog.dto.response.trend.TrendListResponse;
+import com.example.trendlog.global.exception.trend.CommentNotFoundException;
+import com.example.trendlog.global.exception.trend.DuplicateTrendException;
+import com.example.trendlog.global.exception.trend.InvalidCategoryException;
 import com.example.trendlog.global.exception.trend.TrendNotFoundException;
+import com.example.trendlog.global.exception.user.UserAccessDeniedException;
 import com.example.trendlog.global.exception.user.UserNotFoundException;
 import com.example.trendlog.repository.trend.*;
 import com.example.trendlog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -34,12 +39,28 @@ public class TrendService {
     private final TrendScrapRepository trendScrapRepository;
     private final PopularTrendRepository popularTrendRepository;
     private final HotTrendRepository hotTrendRepository;
+    private final TrendCommentRepository trendCommentRepository;
+    private final TrendCommentLikeReposity trendCommentLikeReposity;
 
     /**
      * 트렌드 생성
      */
     @Transactional
-    public Long createTrend(TrendCreateRequest request) {
+    public Long createTrend(UUID userId,TrendCreateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new); // USER-001
+
+        if (trendRepository.existsByTitle(request.getTitle())) {
+            throw new DuplicateTrendException(); // TREND-001
+        }
+
+        TrendCategory category;
+        try {
+            category = TrendCategory.valueOf(request.getCategory());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidCategoryException(); // TREND-010
+        }
+
         Trend trend = Trend.builder().
                 title(request.getTitle())
                 .description(request.getDescription())
@@ -48,6 +69,7 @@ public class TrendService {
                 .tags(new ArrayList<>()) // 초기 비어 있음
                 .similarTrends(new ArrayList<>()) // 초기 비어 있음
                 .build();
+
         Trend savedTrend = trendRepository.save(trend);
         return savedTrend.getId();
     }
@@ -55,7 +77,7 @@ public class TrendService {
     /**
      * 트렌드 상세 조회
      */
-    public TrendDetailResponse getTrendById(Long id) {
+    public TrendDetailResponse getTrendDetail(Long id) {
         Trend trend = trendRepository.findById(id)
                 .orElseThrow(TrendNotFoundException::new);//TREND-002
         return TrendDetailResponse.from(trend);
@@ -153,7 +175,7 @@ public class TrendService {
 
         LocalDateTime sixHoursAge=now.minusHours(6);
 
-        List<Trend> trends = trendRepository.findTop3ByScoreIncreaseSince(sixHoursAge);
+        List<Trend> trends = trendRepository.findTop3ByScoreIncrease(PageRequest.of(0, 3));
 
         List<HotTrend> hotTrends = trends.stream()
                 .map(trend->{
@@ -180,6 +202,57 @@ public class TrendService {
                 .toList();
     }
 
+    /**
+     * 댓글 생성
+     */
+    @Transactional
+    public void addComment(Long trendId, UUID userId, String content){
+        Trend trend = trendRepository.findById(trendId)
+                .orElseThrow(TrendNotFoundException::new); //TREND-002
 
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new); //USER-001
+        TrendComment comment = TrendComment.of(user,trend,content);
+        trend.increaseCommentCount();
+        trendCommentRepository.save(comment);
+    }
+    /**
+     * 댓글 삭제
+     */
+    @Transactional
+    public void deleteComment(Long commentId, UUID userId) {
+        TrendComment comment = trendCommentRepository.findById(commentId)
+                .orElseThrow(CommentNotFoundException::new); //TREND-007
+
+        if(!comment.getUser().getId().equals(userId)){
+            throw new UserAccessDeniedException(); //USER-012
+        }
+
+        comment.getTrend().decreaseCommentCount();
+        trendCommentRepository.delete(comment);
+    }
+
+    /**
+     * 댓글 좋아요
+     */
+    @Transactional
+    public void likeComment(Long commentId, UUID userId) {
+        TrendComment comment = trendCommentRepository.findById(commentId)
+                .orElseThrow(CommentNotFoundException::new);//TREND-007
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new); //USER-001
+
+        Optional<TrendCommentLike> existing=trendCommentLikeReposity.findByUserAndComment(user,comment);
+
+        if(existing.isPresent()){
+            trendCommentLikeReposity.delete(existing.get());
+            comment.decreaseLikeCount();
+        }else{
+            TrendCommentLike like=TrendCommentLike.of(user,comment);
+            trendCommentLikeReposity.save(like);
+            comment.increaseLikeCount();
+        }
+    }
 
 }
