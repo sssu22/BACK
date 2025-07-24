@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static com.example.trendlog.global.exception.code.PostErrorCode.POST_NOT_FOUND;
@@ -88,13 +89,21 @@ public class PostService {
     // 게시글 상세 조회
 
     public PostResponse getPostDetail(Principal principal, Long postId) {
-        User user = findUser(principal);
         Post post = getPost(postId);
         post.addViewCount();
-        return PostResponse.from(post,
-                postLikeRepository.existsByUserIdAndPostId(user.getId(), postId),
-                postScrapRepository.existsByUserIdAndPostId(user.getId(), postId),
-                postCommentService.getPostCommentList(postId));
+
+        UUID userId = null;
+        boolean isLiked = false;
+        boolean isScrapped = false;
+
+        if (principal != null) {
+            User user = findUser(principal);
+            userId = user.getId();
+            isLiked = postLikeRepository.existsByUserIdAndPostId(userId, postId);
+            isScrapped = postScrapRepository.existsByUserIdAndPostId(userId, postId);
+        }
+
+        return PostResponse.from(post, isLiked, isScrapped, postCommentService.getPostCommentList(postId));
     }
 
     // 인기 게시글 목록 조회
@@ -223,7 +232,6 @@ public class PostService {
     }
 
     private User findUser(Principal principal) {
-        log.info("Finding user by principal: {}", principal.getName());
         return userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new AppException(USER_NOT_FOUND));
     }

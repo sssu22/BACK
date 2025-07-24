@@ -5,6 +5,7 @@ import com.example.trendlog.dto.request.post.PostCreateUpdateRequest;
 import com.example.trendlog.dto.response.post.PostPagedResponse;
 import com.example.trendlog.dto.response.post.PostPopularPagedResponse;
 import com.example.trendlog.dto.response.post.PostResponse;
+import com.example.trendlog.global.docs.PostSwaggerSpec;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.service.PostCommentService;
 import com.example.trendlog.service.PostService;
@@ -20,13 +21,12 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
-public class PostController {
+public class PostController implements PostSwaggerSpec {
 
     private final PostService postService;
     private final PostCommentService postCommentService;
 
     // 게시글 생성
-    @Operation(summary = "게시글 작성", description = "새로운 게시글을 작성합니다.")
     @PostMapping
     public ResponseEntity<DataResponse<Void>> createPost(Principal principal,
                                                          @RequestBody PostCreateUpdateRequest request) {
@@ -35,9 +35,6 @@ public class PostController {
     }
 
     // 게시글 목록 조회 (정렬 + 감정 필터 + 페이징)
-    @Operation(summary = "게시글 목록 조회"
-            , description = "정렬 및 감정 필터와 페이지네이션을 통해 게시글 목록을 조회합니다.\n " +
-            "현재 존재하는 감정은 JOY, EXCITEMENT, NOSTALGIA, SURPRISE, LOVE 입니다.")
     @GetMapping
     public ResponseEntity<DataResponse<PostPagedResponse>> getPostList(
             @RequestParam(defaultValue = "latest") String sort,
@@ -49,7 +46,6 @@ public class PostController {
     }
 
     // 게시글 상세 조회
-    @Operation(summary = "게시글 상세 조회", description = "특정 게시글의 상세 정보를 조회합니다.")
     @GetMapping("/{postId}")
     public ResponseEntity<DataResponse<PostResponse>> getPostDetail(Principal principal,
                                                       @PathVariable Long postId) {
@@ -57,7 +53,6 @@ public class PostController {
     }
 
     // 인기 게시글 목록 조회
-    @Operation(summary = "인기 게시글 목록 조회", description = "(지금 뜨는 경험) 일주일 내로 만들어진 게시글 중에서 좋아요 + 스크랩 수 높은 순 자정마다 업데이트되는 인기 게시글을 페이지 단위로 조회합니다.")
     @GetMapping("/popular")
     public ResponseEntity<DataResponse<PostPopularPagedResponse>> getPopularPosts(
             @RequestParam(defaultValue = "1") int page,
@@ -67,7 +62,6 @@ public class PostController {
     }
 
     // 게시글 수정
-    @Operation(summary = "게시글 수정", description = "기존 게시글의 내용을 수정합니다.")
     @PutMapping("/{postId}")
     public ResponseEntity<DataResponse<Void>> updatePost(Principal principal,
                                            @PathVariable Long postId,
@@ -77,7 +71,6 @@ public class PostController {
     }
 
     // 게시글 삭제
-    @Operation(summary = "게시글 삭제", description = "게시글을 삭제합니다. (소프트 삭제)")
     @DeleteMapping("/{postId}")
     public ResponseEntity<DataResponse<Void>> deletePost(Principal principal,
                                            @PathVariable Long postId) {
@@ -86,7 +79,6 @@ public class PostController {
     }
 
     // 게시글 좋아요
-    @Operation(summary = "게시글 좋아요", description = "게시글에 좋아요를 누릅니다. 다시 누르면 취소됩니다.")
     @PostMapping("/{postId}/like")
     public ResponseEntity<DataResponse<Void>> likePost(Principal principal,
                                          @PathVariable Long postId) {
@@ -95,7 +87,6 @@ public class PostController {
     }
 
     // 게시글 스크랩
-    @Operation(summary = "게시글 스크랩", description = "게시글을 스크랩합니다. 다시 누르면 취소됩니다.")
     @PostMapping("/{postId}/scrap")
     public ResponseEntity<DataResponse<Void>> scrapPost(Principal principal,
                                           @PathVariable Long postId) {
@@ -103,7 +94,7 @@ public class PostController {
         return ResponseEntity.ok(DataResponse.ok());
     }
 
-    @Operation(summary = "게시글 댓글 작성", description = "게시글에 댓글을 작성합니다.")
+    // 댓글 작성
     @PostMapping("/{postId}/comments")
     public ResponseEntity<DataResponse<Void>> addComment(
             Principal principal,
@@ -114,7 +105,7 @@ public class PostController {
         return ResponseEntity.ok(DataResponse.ok());
     }
 
-    @Operation(summary = "게시글 댓글 삭제", description = "게시글의 댓글을 삭제합니다. (소프트 삭제)")
+    // 댓글 삭제
     @DeleteMapping("/{postId}/comments/{commentId}")
     public ResponseEntity<DataResponse<Void>> deleteComment(
             Principal principal,
@@ -125,7 +116,7 @@ public class PostController {
         return ResponseEntity.ok(DataResponse.ok());
     }
 
-    @Operation(summary = "댓글 좋아요 토글", description = "댓글에 좋아요를 누르거나 취소합니다.")
+    // 댓글 좋아요
     @PostMapping("/{postId}/comments/{commentId}/like")
     public ResponseEntity<DataResponse<Void>> likeComment(
             Principal principal,

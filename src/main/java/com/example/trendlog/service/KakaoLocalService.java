@@ -1,11 +1,15 @@
 package com.example.trendlog.service;
 
+import com.example.trendlog.global.exception.AppException;
+import com.example.trendlog.global.exception.trend.TrendNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static com.example.trendlog.global.exception.code.CommonErrorCode.INTERNAL_SERVER_ERROR;
 
 @Service
 public class KakaoLocalService {
@@ -44,7 +48,8 @@ public class KakaoLocalService {
                 return district;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new AppException(INTERNAL_SERVER_ERROR);
+
         }
         return null;  // 실패 시 null 반환
     }

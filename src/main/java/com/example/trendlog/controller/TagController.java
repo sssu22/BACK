@@ -1,6 +1,7 @@
 package com.example.trendlog.controller;
 
 import com.example.trendlog.dto.response.post.TagPopularPagedResponse;
+import com.example.trendlog.global.docs.TagSwaggerSpec;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.service.TagService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,10 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/tags")
 @RequiredArgsConstructor
-public class TagController {
+public class TagController implements TagSwaggerSpec {
     private final TagService tagService;
 
-    @Operation(summary = "인기 태그 목록 조회", description = "전체 태그 중 가장 많이 사용된 태그를 랭킹 순으로 조회합니다.")
     @GetMapping("/popular")
     public ResponseEntity<DataResponse<TagPopularPagedResponse>> getPopularTags(
             @RequestParam(defaultValue = "1") int page,
