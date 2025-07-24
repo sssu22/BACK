@@ -89,8 +89,16 @@ public class TrendService {
                 .map(TrendCommentDto::from)
                 .collect(Collectors.toList());
 
-        boolean isLiked = trendLikeRepository.existsByTrendAndUser(trend, user);
-        boolean isScrapped = trendScrapRepository.existsByTrendAndUser(trend, user);
+        boolean isLiked = false;
+        boolean isScrapped = false;
+
+        if (user != null) {
+            System.out.println("ddddd");
+            isLiked = trendLikeRepository.existsByTrendAndUser(trend, user);
+            isScrapped = trendScrapRepository.existsByTrendAndUser(trend, user);
+        }else{
+            System.out.println("sssss");
+        }
 
         return TrendDetailResponse.from(trend,comments,isLiked,isScrapped);
     }

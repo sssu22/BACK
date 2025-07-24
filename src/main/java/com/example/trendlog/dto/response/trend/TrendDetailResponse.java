@@ -26,9 +26,10 @@ public class TrendDetailResponse {
     private final List<String> tags;
     private final List<SimilarTrendDto> similarTrends;
     private final LocalDateTime createdAt;
-    private final List<TrendCommentDto> comments;
     private final boolean isLiked;
     private final boolean isScrapped;
+    private final List<TrendCommentDto> comments;
+
 
     public static TrendDetailResponse from(Trend trend, List<TrendCommentDto> comments,boolean isLiked, boolean isScrapped) {
         return TrendDetailResponse.builder()
@@ -50,10 +51,10 @@ public class TrendDetailResponse {
                                 .collect(Collectors.toList())
                                 : List.of()
                 )
-                .comments(comments)
-                .createdAt(trend.getCreatedAt())
                 .isLiked(isLiked)
                 .isScrapped(isScrapped)
+                .comments(comments)
+                .createdAt(trend.getCreatedAt())
                 .build();
 
     }

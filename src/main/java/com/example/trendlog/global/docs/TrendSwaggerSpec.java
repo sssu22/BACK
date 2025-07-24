@@ -59,7 +59,7 @@ public interface TrendSwaggerSpec {
             @ApiResponse(responseCode = "400", description = "유효하지 않은 트렌드 카테고리 (TREND-010)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public ResponseEntity<DataResponse<TrendDetailResponse>> getTrendDetail(@PathVariable Long trendId);
+    public ResponseEntity<DataResponse<TrendDetailResponse>> getTrendDetail(@AuthenticationPrincipal UserDetailsImpl userDetails,@PathVariable Long trendId);
 
     @Operation(summary = "트렌드 댓글 작성", description = "트렌드의 댓글을 생성합니다.")
     @SecurityRequirement(name = "bearerAuth")

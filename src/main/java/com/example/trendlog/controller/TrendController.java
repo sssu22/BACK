@@ -1,5 +1,6 @@
 package com.example.trendlog.controller;
 
+import com.example.trendlog.domain.User;
 import com.example.trendlog.dto.request.trend.TrendCommentCreateRequest;
 import com.example.trendlog.dto.request.trend.TrendCreateRequest;
 import com.example.trendlog.dto.response.trend.*;
@@ -46,7 +47,8 @@ public class TrendController implements TrendSwaggerSpec {
     public ResponseEntity<DataResponse<TrendDetailResponse>> getTrendDetail(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long trendId){
-        TrendDetailResponse response=trendService.getTrendDetail(userDetails.getUser(),trendId);
+        User user = (userDetails != null) ? userDetails.getUser() : null;
+        TrendDetailResponse response=trendService.getTrendDetail(user,trendId);
         return ResponseEntity.ok(DataResponse.from(response));
     }
     @PostMapping("/{trendId}/comments")
