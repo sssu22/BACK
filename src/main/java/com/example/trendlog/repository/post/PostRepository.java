@@ -5,8 +5,12 @@ import com.example.trendlog.domain.post.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
@@ -22,4 +26,13 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findAllByDeletedFalse(Pageable pageable);
 
 
+    @Query("SELECT p.district, COUNT(p) " +
+            "FROM Post p " +
+            "WHERE p.user.id = :userId AND p.district IS NOT NULL " +
+            "GROUP BY p.district")
+    List<Object[]> countPostsByDistrictForUser(@Param("userId") UUID userId);
+
+    Page<Post> findAllByDeletedFalseAndUserId(UUID userId, Pageable pageable);
+
+    Page<Post> findAllByDeletedFalseAndUserIdAndDistrict(UUID userId, String district, Pageable pageable);
 }

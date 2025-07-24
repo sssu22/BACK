@@ -1,11 +1,14 @@
 package com.example.trendlog.controller;
 
 import com.example.trendlog.dto.request.user.PasswordChangeRequest;
+import com.example.trendlog.dto.response.post.PostMapResponse;
+import com.example.trendlog.dto.response.post.PostPagedResponse;
 import com.example.trendlog.dto.response.user.UserInfoResponse;
 import com.example.trendlog.dto.request.user.UserUpdateRequest;
 import com.example.trendlog.global.docs.UserSwaggerSpec;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.service.GCSService;
+import com.example.trendlog.service.PostService;
 import com.example.trendlog.service.RefreshTokenService;
 import com.example.trendlog.service.UserService;
 import jakarta.validation.Valid;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -24,6 +28,8 @@ public class UserController implements UserSwaggerSpec {
     private final UserService userService;
     private final GCSService gcsService;
     private final RefreshTokenService refreshTokenService;
+    private final PostService postService;
+
     @GetMapping("/me")
     public ResponseEntity<DataResponse<UserInfoResponse>> getMyInfo(Principal principal){
         return ResponseEntity.ok(DataResponse.from(userService.getMyInfo(principal)));
@@ -53,6 +59,20 @@ public class UserController implements UserSwaggerSpec {
 //        String imageUrl=userService.updateProfileImage(principal,file);
         String imageUrl = userService.uploadTempProfileImage(principal, file);
         return ResponseEntity.ok(DataResponse.from(imageUrl));
+    }
+
+    @GetMapping("me/posts/map")
+    public ResponseEntity<DataResponse<List<PostMapResponse>>> getMyPostMarkersInArea(Principal principal) {
+        return ResponseEntity.ok(DataResponse.from(postService.getPostMarkersInArea(principal)));
+    }
+
+    @GetMapping("me/posts")
+    public ResponseEntity<DataResponse<PostPagedResponse>> getMyPostList(
+            Principal principal,
+            @RequestParam(defaultValue = "all") String district,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(DataResponse.from(postService.getMyPostList(principal, district, page, size)));
     }
 
 }

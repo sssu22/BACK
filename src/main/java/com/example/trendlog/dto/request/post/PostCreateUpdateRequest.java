@@ -19,16 +19,21 @@ public class PostCreateUpdateRequest {
     private Long trendId;
     private LocalDate experienceDate;
     private String location;
+    private Double latitude;
+    private Double longitude;
     private String emotion;
     private List<String> tags; // nullable
     private String description; // nullable
 
-    public Post toEntity(User user) {
+    public Post toEntity(User user, String district) {
         return Post.builder()
                 .title(title)
                 .trendId(trendId)
                 .experienceDate(experienceDate)
                 .location(location)
+                .latitude(latitude)
+                .longitude(longitude)
+                .district(district)
                 .emotion(Emotion.from(emotion))
                 .description(description)
                 .user(user)
@@ -38,7 +43,8 @@ public class PostCreateUpdateRequest {
 
     public void validate() {
         if (title == null || title.isBlank() || trendId == null || experienceDate == null
-                || location == null || location.isBlank() || emotion == null || emotion.isBlank() ) {
+                || location == null || location.isBlank() || latitude == null || longitude == null
+                || emotion == null || emotion.isBlank() ) {
             throw new AppException(POST_EMPTY_FIELD);
         }
     }

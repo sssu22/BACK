@@ -29,8 +29,10 @@ public class Post {
     @Lob
     @Column(columnDefinition = "TEXT")
     private String description;
-    private String location;
-    // 위도, 경도 추가
+    private String location; // 위치명
+    private Double latitude; // 위도
+    private Double longitude; // 경도
+    private String district; // 구 이름
     private LocalDate experienceDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -83,11 +85,14 @@ public class Post {
         this.deleted = true;
     }
 
-    public void update(PostCreateUpdateRequest request) {
+    public void update(PostCreateUpdateRequest request, String district) {
         this.title = request.getTitle();
         this.trendId = request.getTrendId();
         this.experienceDate = request.getExperienceDate();
         this.location = request.getLocation();
+        this.latitude = request.getLatitude();
+        this.longitude = request.getLongitude();
+        this.district = district;
         this.emotion = Emotion.from(request.getEmotion());
         this.description = request.getDescription();
         this.updatedAt = LocalDateTime.now();

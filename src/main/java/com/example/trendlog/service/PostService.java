@@ -36,12 +36,14 @@ public class PostService {
     private final TagRepository tagRepository;
     private final PostStatisticsRepository postStatisticsRepository;
     private final PostCommentService postCommentService;
+    private final KakaoLocalService kakaoLocalService;
 
     // 게시글 생성
     public void createPost(Principal principal, PostCreateUpdateRequest request) {
         User user = findUser(principal);
         request.validate(); // 요청 유효성 검사
-        Post post = request.toEntity(user);
+        String district = kakaoLocalService.getDistrictByCoordinates(request.getLatitude(), request.getLongitude());
+        Post post = request.toEntity(user, district);
         // 이미 존재하는 태그인지 확인, 존재하는 태그이면 PostTag 객체에 추가, 존재하지 않는 태그이면 Tag 객체 생성 후 저장
         List<String> tags = request.getTags();
         int sortOrder = 1;
@@ -112,7 +114,8 @@ public class PostService {
         }
 
         request.validate(); // 요청 유효성 검사
-        post.update(request);
+        String district = kakaoLocalService.getDistrictByCoordinates(request.getLatitude(), request.getLongitude());
+        post.update(request, district);
 
         // 기존 태그 삭제 후 새로 추가
         // PostTag 엔티티는 cascade = CascadeType.ALL로 설정되어 있어, Post 엔티티에서 태그를 제거하면 자동으로 삭제됨
@@ -167,6 +170,42 @@ public class PostService {
             postScrapRepository.save(PostScrap.of(user, post));
             post.changeScrapCount(+1);
         }
+    }
+
+    // 내 게시글 지도 위치에 표기하기
+    public List<PostMapResponse> getPostMarkersInArea(Principal principal) {
+        User user = findUser(principal);
+
+        // 구별 게시글 수 조회
+        List<Object[]> results = postRepository.countPostsByDistrictForUser(user.getId());
+
+        // 변환
+        return results.stream()
+                .map(row -> {
+                    String district = (String) row[0];
+                    Long count = (Long) row[1]; // JPA에서는 count가 Long으로 나옴
+                    return PostMapResponse.from(district, count.intValue());
+                })
+                .toList();
+    }
+
+    // 내 게시글 조회
+    public PostPagedResponse getMyPostList(Principal principal, String district, int page, int size) {
+        User user = findUser(principal);
+        Pageable pageable = PageRequest.of(page-1, size);
+        Page<Post> postPage;
+
+        if (district.equalsIgnoreCase("all")) {
+            postPage = postRepository.findAllByDeletedFalseAndUserId(user.getId(), pageable);
+        } else {
+            postPage = postRepository.findAllByDeletedFalseAndUserIdAndDistrict(user.getId(), district, pageable);
+        }
+
+        List<PostListResponse> list = postPage.getContent().stream()
+                .map(PostListResponse::from)
+                .toList();
+
+        return PostPagedResponse.from(list, postPage);
     }
 
 
