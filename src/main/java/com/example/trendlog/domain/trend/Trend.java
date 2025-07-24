@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Builder
+@AllArgsConstructor
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,25 +30,33 @@ public class Trend {
 
     private Integer score;
 
+    @Builder.Default
     private  Integer viewCount=0;
 
+    @Builder.Default
     private Integer likeCount=0;
 
+    @Builder.Default
     private Integer commentCount = 0;
 
-    private Integer snsMentions;
+    @Builder.Default
+    private Integer snsMentions=0;
 
-    private String peakPeriod;
+    @Builder.Default
+    private String peakPeriod="미정";
 
-    private LocalDateTime createdAt;
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Setter
     private Integer previousScore;
 
     //아래 두개는 빈 리스트로 저장->추후 AI 적용 시 구현 예정
+    @Builder.Default
     @ElementCollection
     private List<String> tags = new ArrayList<>();
 
+    @Builder.Default
     @ManyToMany
     @JoinTable(
             name = "trend_similar_trends",
@@ -59,16 +69,6 @@ public class Trend {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
-    }
-
-    @Builder
-    public Trend (String title, String description, String category, Integer score, List<String> tags, List<Trend> similarTrends){
-        this.title = title;
-        this.description = description;
-        this.category = TrendCategory.valueOf(category);
-        this.score = score;
-        this.tags = tags != null ? tags : new ArrayList<>();
-        this.similarTrends = similarTrends != null ? similarTrends : new ArrayList<>();
     }
 
     public void increaseViewCount() {

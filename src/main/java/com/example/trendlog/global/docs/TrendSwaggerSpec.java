@@ -2,10 +2,7 @@ package com.example.trendlog.global.docs;
 
 import com.example.trendlog.dto.request.trend.TrendCommentCreateRequest;
 import com.example.trendlog.dto.request.trend.TrendCreateRequest;
-import com.example.trendlog.dto.response.trend.PopularTrendResponse;
-import com.example.trendlog.dto.response.trend.RecentTrendResponse;
-import com.example.trendlog.dto.response.trend.TrendDetailResponse;
-import com.example.trendlog.dto.response.trend.TrendListPageResponse;
+import com.example.trendlog.dto.response.trend.*;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.global.dto.ErrorResponse;
 import com.example.trendlog.global.security.userdetails.UserDetailsImpl;
@@ -41,7 +38,7 @@ public interface TrendSwaggerSpec {
             @ApiResponse(responseCode = "400", description = "유효하지 않은 트렌드 카테고리 (TREND-010)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public ResponseEntity<DataResponse<Void>> createTrend(
+    public ResponseEntity<DataResponse<TrendCreateResponse>> createTrend(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Valid @RequestBody TrendCreateRequest request
     );

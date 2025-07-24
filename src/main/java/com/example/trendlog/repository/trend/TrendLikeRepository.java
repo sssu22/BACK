@@ -9,8 +9,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface TrendLikeRepository extends JpaRepository<TrendLike, Long> {
-    boolean existsByUserAndTrend(User user, Trend trend);
     Optional<TrendLike> findByUserAndTrend(User user, Trend trend);
+    boolean existsByTrendAndUser(Trend trend, User user);
 
 
 }

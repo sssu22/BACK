@@ -9,6 +9,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface TrendScrapRepository extends JpaRepository<TrendScrap, Long> {
-    boolean existsByUserAndTrend(User user, Trend trend);
+    boolean existsByTrendAndUser(Trend trend, User user);
     Optional<TrendScrap> findByUserAndTrend(User user, Trend trend);
 }

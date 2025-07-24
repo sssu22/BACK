@@ -27,12 +27,12 @@ import java.util.List;
 public class TrendController implements TrendSwaggerSpec {
     private final TrendService trendService;
     @PostMapping
-    public ResponseEntity<DataResponse<Void>> createTrend(
+    public ResponseEntity<DataResponse<TrendCreateResponse>> createTrend(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Valid @RequestBody TrendCreateRequest request
     ){
-        trendService.createTrend(userDetails.getUserId(),request);
-        return ResponseEntity.ok(DataResponse.ok());
+        TrendCreateResponse response = trendService.createTrend(userDetails.getUserId(), request);
+        return ResponseEntity.ok(DataResponse.from(response));
     }
 
     @GetMapping
@@ -43,8 +43,10 @@ public class TrendController implements TrendSwaggerSpec {
     }
 
     @GetMapping("/{trendId}")
-    public ResponseEntity<DataResponse<TrendDetailResponse>> getTrendDetail(@PathVariable Long trendId){
-        TrendDetailResponse response=trendService.getTrendDetail(trendId);
+    public ResponseEntity<DataResponse<TrendDetailResponse>> getTrendDetail(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable Long trendId){
+        TrendDetailResponse response=trendService.getTrendDetail(userDetails.getUser(),trendId);
         return ResponseEntity.ok(DataResponse.from(response));
     }
     @PostMapping("/{trendId}/comments")

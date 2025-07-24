@@ -45,13 +45,9 @@ public class TrendService {
      * 트렌드 생성
      */
     @Transactional
-    public Long createTrend(UUID userId,TrendCreateRequest request) {
+    public TrendCreateResponse createTrend(UUID userId,TrendCreateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new); // USER-001
-
-        if (trendRepository.existsByTitle(request.getTitle())) {
-            throw new DuplicateTrendException(); // TREND-001
-        }
 
         TrendCategory category;
         try {
@@ -60,24 +56,30 @@ public class TrendService {
             throw new InvalidCategoryException(); // TREND-010
         }
 
-        Trend trend = Trend.builder().
-                title(request.getTitle())
+        if (trendRepository.existsByTitleAndCategory(request.getTitle(),category)) {
+            throw new DuplicateTrendException(); // TREND-001
+        }
+
+        Trend trend = Trend.builder()
+                .title(request.getTitle())
                 .description(request.getDescription())
-                .category(request.getCategory())
-                .score(ThreadLocalRandom.current().nextInt(60,101)) //임시 랜덤 점수
-                .tags(new ArrayList<>()) // 초기 비어 있음
-                .similarTrends(new ArrayList<>()) // 초기 비어 있음
+                .category(TrendCategory.valueOf(request.getCategory()))  // 문자열 → enum 변환
+                .score(ThreadLocalRandom.current().nextInt(60, 101))     // 랜덤 점수
                 .build();
 
         Trend savedTrend = trendRepository.save(trend);
-        return savedTrend.getId();
+        return new TrendCreateResponse(
+                savedTrend.getId(),
+                savedTrend.getTitle(),
+                savedTrend.getCategory().name()
+        );
     }
 
     /**
      * 트렌드 상세 조회
      */
     @Transactional
-    public TrendDetailResponse getTrendDetail(Long id) {
+    public TrendDetailResponse getTrendDetail(User user, Long id) {
         Trend trend = trendRepository.findById(id)
                 .orElseThrow(TrendNotFoundException::new);//TREND-002
 
@@ -87,7 +89,10 @@ public class TrendService {
                 .map(TrendCommentDto::from)
                 .collect(Collectors.toList());
 
-        return TrendDetailResponse.from(trend,comments);
+        boolean isLiked = trendLikeRepository.existsByTrendAndUser(trend, user);
+        boolean isScrapped = trendScrapRepository.existsByTrendAndUser(trend, user);
+
+        return TrendDetailResponse.from(trend,comments,isLiked,isScrapped);
     }
 
     /**

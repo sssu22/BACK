@@ -16,15 +16,6 @@ public class TrendCommentDto {
     private final LocalDateTime createAt;
     private final Integer likeCount;
 
-    public TrendCommentDto(Long commentId, String content, String authorName, String authorProfileImageUrl, LocalDateTime createAt, Integer likeCount) {
-        this.commentId = commentId;
-        this.content = content;
-        this.authorName = authorName;
-        this.authorProfileImageUrl = authorProfileImageUrl;
-        this.createAt = createAt;
-        this.likeCount = likeCount;
-    }
-
     public static TrendCommentDto from(TrendComment comment) {
         return TrendCommentDto.builder()
                 .commentId(comment.getId())

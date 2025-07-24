@@ -27,25 +27,10 @@ public class TrendDetailResponse {
     private final List<SimilarTrendDto> similarTrends;
     private final LocalDateTime createdAt;
     private final List<TrendCommentDto> comments;
+    private final boolean isLiked;
+    private final boolean isScrapped;
 
-    public TrendDetailResponse(Long id, String title, String description, TrendCategory category, Integer score, Integer viewCount, Integer likeCount, Integer commentCount, Integer snsMentions, String peakPeriod, List<String> tags, List<SimilarTrendDto> similarTrends, LocalDateTime createdAt,List<TrendCommentDto> comments) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.category = category;
-        this.score = score;
-        this.viewCount = viewCount;
-        this.likeCount = likeCount;
-        this.commentCount = commentCount;
-        this.snsMentions = snsMentions;
-        this.peakPeriod = peakPeriod;
-        this.tags = tags;
-        this.similarTrends = similarTrends;
-        this.createdAt = createdAt;
-        this.comments = comments;
-    }
-
-    public static TrendDetailResponse from(Trend trend, List<TrendCommentDto> comments) {
+    public static TrendDetailResponse from(Trend trend, List<TrendCommentDto> comments,boolean isLiked, boolean isScrapped) {
         return TrendDetailResponse.builder()
                 .id(trend.getId())
                 .title(trend.getTitle())
@@ -67,6 +52,8 @@ public class TrendDetailResponse {
                 )
                 .comments(comments)
                 .createdAt(trend.getCreatedAt())
+                .isLiked(isLiked)
+                .isScrapped(isScrapped)
                 .build();
 
     }
