@@ -28,7 +28,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT p.district, COUNT(p) " +
             "FROM Post p " +
-            "WHERE p.user.id = :userId AND p.district IS NOT NULL " +
+            "WHERE p.user.id = :userId AND p.district IS NOT NULL AND p.deleted = false " +
             "GROUP BY p.district")
     List<Object[]> countPostsByDistrictForUser(@Param("userId") UUID userId);
 

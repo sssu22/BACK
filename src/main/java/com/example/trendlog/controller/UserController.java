@@ -11,6 +11,7 @@ import com.example.trendlog.service.GCSService;
 import com.example.trendlog.service.PostService;
 import com.example.trendlog.service.RefreshTokenService;
 import com.example.trendlog.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -61,11 +62,14 @@ public class UserController implements UserSwaggerSpec {
         return ResponseEntity.ok(DataResponse.from(imageUrl));
     }
 
+
+    @Operation(summary = "내 게시글 지역별 마커 조회", description = "사용자가 작성한 게시글들을 서울 안의 지역(구)별로 묶어 마커 정보를 조회합니다.")
     @GetMapping("me/posts/map")
     public ResponseEntity<DataResponse<List<PostMapResponse>>> getMyPostMarkersInArea(Principal principal) {
         return ResponseEntity.ok(DataResponse.from(postService.getPostMarkersInArea(principal)));
     }
 
+    @Operation(summary = "내 게시글 목록 조회", description = "사용자가 작성한 게시글 목록을 조회합니다. 지역 필터링(district)과 페이지네이션을 지원합니다.")
     @GetMapping("me/posts")
     public ResponseEntity<DataResponse<PostPagedResponse>> getMyPostList(
             Principal principal,
