@@ -15,7 +15,7 @@ public interface PostStatisticsRepository extends JpaRepository<PostStatistics, 
     SELECT post_id,
            like_count + comment_count AS total_count
     FROM posts
-    WHERE created_at >= CURRENT_TIMESTAMP - INTERVAL '1 day'
+    WHERE created_at >= CURRENT_TIMESTAMP - INTERVAL '1 day' AND deleted = false
     """, nativeQuery = true)
     void updateCommunityStatistics();
 
@@ -23,7 +23,12 @@ public interface PostStatisticsRepository extends JpaRepository<PostStatistics, 
 //            "post"
 //    })
 //    Page<PostStatistics> findAllByOrderByTotalCountDesc(Pageable pageable);
-    @Query("SELECT ps FROM PostStatistics ps JOIN FETCH ps.post p ORDER BY ps.totalCount DESC, p.createdAt DESC")
+    @Query("""
+    SELECT ps FROM PostStatistics ps
+    JOIN FETCH ps.post p
+    WHERE p.deleted = false
+    ORDER BY ps.totalCount DESC, p.createdAt DESC
+    """)
     Page<PostStatistics> findAllOrderByTotalCountDescPostCreatedAtDesc(Pageable pageable);
 
     @Modifying

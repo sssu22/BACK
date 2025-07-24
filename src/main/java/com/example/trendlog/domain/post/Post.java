@@ -39,7 +39,6 @@ public class Post {
     private LocalDate experienceDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    @Column(name = "is_deleted")
     @Builder.Default
     private boolean deleted = false;
     @Enumerated(EnumType.STRING)
