@@ -2,6 +2,7 @@ package com.example.trendlog.controller;
 
 import com.example.trendlog.dto.request.password.ForgotPasswordRequest;
 import com.example.trendlog.dto.request.password.ResetPasswordRequest;
+import com.example.trendlog.global.docs.PasswordResetSwaggerSpec;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.service.PasswordResetService;
 import jakarta.validation.Valid;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/password")
-public class PasswordResetController {
+public class PasswordResetController implements PasswordResetSwaggerSpec {
     private final PasswordResetService passwordResetService;
 
     @PostMapping("/reset-request")

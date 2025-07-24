@@ -19,7 +19,7 @@ public interface PasswordResetSwaggerSpec {
     @Operation(summary = "비밀번호 재설정 메일", description = "이메일을 입력해, 메일로 토큰이 포함된 비밀번호 재설정 링크를 전송합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "메일 전송 성공"),
-            @ApiResponse(responseCode = "400", description = "존재하지 않는 회원 (USER-001)",
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 회원 (USER-001)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "이메일 전송 실패 (MAIL-001)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
@@ -29,7 +29,7 @@ public interface PasswordResetSwaggerSpec {
     @Operation(summary = "비밀번호 재설정", description = "임시 토큰을 사용해 비밀번호를 재설정 합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "메일 전송 성공"),
-            @ApiResponse(responseCode = "400", description = "존재하지 않는 회원 (USER-001)",
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 회원 (USER-001)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "401", description = "비밀번호 재설정 토큰 만료&유효하지 않음 (USER-017)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
