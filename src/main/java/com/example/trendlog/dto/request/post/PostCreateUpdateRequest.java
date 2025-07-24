@@ -3,6 +3,7 @@ package com.example.trendlog.dto.request.post;
 import com.example.trendlog.domain.User;
 import com.example.trendlog.domain.post.Emotion;
 import com.example.trendlog.domain.post.Post;
+import com.example.trendlog.domain.trend.Trend;
 import com.example.trendlog.global.exception.AppException;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,10 +26,10 @@ public class PostCreateUpdateRequest {
     private List<String> tags; // nullable
     private String description; // nullable
 
-    public Post toEntity(User user, String district) {
+    public Post toEntity(User user, String district, Trend trend) {
         return Post.builder()
                 .title(title)
-                .trendId(trendId)
+                .trend(trend)
                 .experienceDate(experienceDate)
                 .location(location)
                 .latitude(latitude)

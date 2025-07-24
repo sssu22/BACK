@@ -17,14 +17,17 @@ public class PostResponse {
     private String emotion;
     private List<String> tags;
     private LocalDate experienceDate;
-    int viewCount;
-    int likeCount;
-    int commentCount;
-    int scrapCount;
-    boolean isScrapped;
-    boolean isLiked;
-    boolean isEdited;
+    private int viewCount;
+    private int likeCount;
+    private int commentCount;
+    private int scrapCount;
+    private boolean isScrapped;
+    private boolean isLiked;
+    private boolean isEdited;
     private List<PostCommentResponse> comments;
+    private String trendTitle;
+    private int trendScore;
+    private Long trendId;
 
 
     public static PostResponse from(Post post, boolean isScrapped, boolean isLiked, List<PostCommentResponse> comments) {
@@ -46,6 +49,9 @@ public class PostResponse {
                 .isLiked(isLiked)
                 .isEdited(!post.getUpdatedAt().equals(post.getCreatedAt()))
                 .comments(comments)
+                .trendTitle(post.getTrend().getTitle())
+                .trendScore(post.getTrend().getScore())
+                .trendId(post.getTrend().getId())
                 .build();
     }
 }

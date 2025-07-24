@@ -12,6 +12,7 @@ public record PostListResponse(
         String location, // ex) 강남구 신사동
         String summary, // description one line 보여주기
         String emotion,
+        String trendTitle,
         int trendScore,
         List<String> tags
 ) {
@@ -23,7 +24,8 @@ public record PostListResponse(
                 post.getLocation(),
                 post.getDescription() != null ? post.getDescription().substring(0,30) : null,
                 post.getEmotion().name(),
-                50, // 임의로
+                post.getTrend().getTitle(), // 트렌드 이름
+                post.getTrend().getScore(),
                 post.getTags().stream()
                         .map(tag -> tag.getTag().getName())
                         .toList()

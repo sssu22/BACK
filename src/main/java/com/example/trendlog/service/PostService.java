@@ -2,11 +2,14 @@ package com.example.trendlog.service;
 
 import com.example.trendlog.domain.User;
 import com.example.trendlog.domain.post.*;
+import com.example.trendlog.domain.trend.Trend;
 import com.example.trendlog.dto.request.post.PostCreateUpdateRequest;
 import com.example.trendlog.dto.response.post.*;
 import com.example.trendlog.global.exception.AppException;
+import com.example.trendlog.global.exception.trend.TrendNotFoundException;
 import com.example.trendlog.repository.UserRepository;
 import com.example.trendlog.repository.post.*;
+import com.example.trendlog.repository.trend.TrendRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -37,13 +40,16 @@ public class PostService {
     private final PostStatisticsRepository postStatisticsRepository;
     private final PostCommentService postCommentService;
     private final KakaoLocalService kakaoLocalService;
+    private final TrendRepository trendRepository;
 
     // 게시글 생성
     public void createPost(Principal principal, PostCreateUpdateRequest request) {
         User user = findUser(principal);
         request.validate(); // 요청 유효성 검사
         String district = kakaoLocalService.getDistrictByCoordinates(request.getLatitude(), request.getLongitude());
-        Post post = request.toEntity(user, district);
+        Trend trend = trendRepository.findById(request.getTrendId())
+                .orElseThrow(TrendNotFoundException::new);
+        Post post = request.toEntity(user, district, trend);
         // 이미 존재하는 태그인지 확인, 존재하는 태그이면 PostTag 객체에 추가, 존재하지 않는 태그이면 Tag 객체 생성 후 저장
         List<String> tags = request.getTags();
         int sortOrder = 1;
@@ -115,8 +121,9 @@ public class PostService {
 
         request.validate(); // 요청 유효성 검사
         String district = kakaoLocalService.getDistrictByCoordinates(request.getLatitude(), request.getLongitude());
-        post.update(request, district);
-
+        Trend trend = trendRepository.findById(request.getTrendId())
+                .orElseThrow(TrendNotFoundException::new);
+        post.update(request, district, trend);
         // 기존 태그 삭제 후 새로 추가
         // PostTag 엔티티는 cascade = CascadeType.ALL로 설정되어 있어, Post 엔티티에서 태그를 제거하면 자동으로 삭제됨
         post.getTags().clear();

@@ -1,6 +1,7 @@
 package com.example.trendlog.domain.post;
 
 import com.example.trendlog.domain.User;
+import com.example.trendlog.domain.trend.Trend;
 import com.example.trendlog.dto.request.post.PostCreateUpdateRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,9 @@ public class Post {
     @Column(name = "post_id")
     private Long id;
     private String title;
-    private Long trendId; // 우선 trendId 받게끔 -> 추후 수정
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trend_id")
+    private Trend trend;
     @Lob
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -85,9 +88,9 @@ public class Post {
         this.deleted = true;
     }
 
-    public void update(PostCreateUpdateRequest request, String district) {
+    public void update(PostCreateUpdateRequest request, String district, Trend trend) {
         this.title = request.getTitle();
-        this.trendId = request.getTrendId();
+        this.trend = trend;
         this.experienceDate = request.getExperienceDate();
         this.location = request.getLocation();
         this.latitude = request.getLatitude();

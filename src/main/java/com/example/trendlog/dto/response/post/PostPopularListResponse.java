@@ -6,6 +6,7 @@ import com.example.trendlog.domain.post.PostStatistics;
 public record PostPopularListResponse (
         Long id,
         String title,
+        String trendTitle,
         int trendScore,
         String tag
 ) {
@@ -15,7 +16,8 @@ public record PostPopularListResponse (
         return new PostPopularListResponse(
                 post.getId(),
                 post.getTitle(),
-                100, // post.trend.trendScore()
+                post.getTrend().getTitle(),
+                post.getTrend().getScore(),
                 post.getTags().isEmpty() ? null : post.getTags().get(0).getTag().getName()
         );
     }
