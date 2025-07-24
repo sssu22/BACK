@@ -86,7 +86,7 @@ public class TrendService {
         trend.increaseViewCount();
 
         List<TrendCommentDto> comments=trendCommentRepository.findByTrendOrderByCreatedAtDesc(trend).stream()
-                .map(TrendCommentDto::from)
+                .map(c->TrendCommentDto.from(c,(user!=null)&&trendCommentLikeReposity.existsByUserAndComment(user,c)))
                 .collect(Collectors.toList());
 
         boolean isLiked = false;

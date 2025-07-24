@@ -15,8 +15,9 @@ public class TrendCommentDto {
     private final String authorProfileImageUrl;
     private final LocalDateTime createAt;
     private final Integer likeCount;
+    private final boolean isLiked;
 
-    public static TrendCommentDto from(TrendComment comment) {
+    public static TrendCommentDto from(TrendComment comment,boolean isLiked) {
         return TrendCommentDto.builder()
                 .commentId(comment.getId())
                 .content(comment.getContent())
@@ -24,6 +25,7 @@ public class TrendCommentDto {
                 .authorProfileImageUrl(comment.getUser().getProfileImage())
                 .createAt(comment.getCreatedAt())
                 .likeCount(comment.getLikeCount())
+                .isLiked(isLiked)
                 .build();
     }
 }
