@@ -1,6 +1,8 @@
 package com.example.trendlog.global.docs;
 
 import com.example.trendlog.dto.request.user.PasswordChangeRequest;
+import com.example.trendlog.dto.response.post.PostMapResponse;
+import com.example.trendlog.dto.response.post.PostPagedResponse;
 import com.example.trendlog.dto.response.user.UserInfoResponse;
 import com.example.trendlog.dto.request.user.UserUpdateRequest;
 import com.example.trendlog.global.dto.DataResponse;
@@ -16,11 +18,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.List;
+
 @SecurityRequirement(name = "bearerAuth")
 @Tag(name = "Users", description = "유저 관련 API")
 public interface UserSwaggerSpec {
@@ -94,4 +100,30 @@ public interface UserSwaggerSpec {
                                                                            )
                                                                    )
                                                                    @RequestPart("file") MultipartFile file);
+
+    @Operation(summary = "내 게시글 지역별 마커 조회", description = "사용자가 작성한 게시글들을 서울 안의 지역(구)별로 묶어 마커 정보를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "내 게시글 지역별 마커 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 회원 (USER-001)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자(USER-011)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<DataResponse<List<PostMapResponse>>> getMyPostMarkersInArea(Principal principal);
+
+
+    @Operation(summary = "내 게시글 목록 조회", description = "사용자가 작성한 게시글 목록을 조회합니다. 지역 필터링(district)과 페이지네이션을 지원합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "내 게시글 목록 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 회원 (USER-001)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자(USER-011)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<DataResponse<PostPagedResponse>> getMyPostList(
+            Principal principal,
+            @RequestParam(defaultValue = "all") String district,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    );
 }
