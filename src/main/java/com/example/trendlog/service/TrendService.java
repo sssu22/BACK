@@ -294,7 +294,7 @@ public class TrendService {
         Trend trend = trendRepository.findById(trendId)
                 .orElseThrow(TrendNotFoundException::new); //TREND-002
 
-        int postCount=postRepository.countByTrend(trend);
+        int postCount=postRepository.countByTrendAndDeletedFalse(trend);
         int relatedPostLikeCount = postRepository.sumLikesByTrend(trend);
 
         // 임의값
