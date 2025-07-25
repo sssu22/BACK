@@ -105,5 +105,11 @@ public class TrendController implements TrendSwaggerSpec {
         return ResponseEntity.ok(DataResponse.ok());
     }
 
+    @GetMapping("/{trendId}/stats")
+    public ResponseEntity<DataResponse<TrendStatisticsResponse>> getTrendStatistics(@PathVariable Long trendId){
+        TrendStatisticsResponse response=trendService.getTrendStatistics(trendId);
+        return ResponseEntity.ok(DataResponse.from(response));
+    }
+
 
 }

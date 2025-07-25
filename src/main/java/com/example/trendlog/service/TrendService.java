@@ -12,6 +12,7 @@ import com.example.trendlog.global.exception.trend.InvalidCategoryException;
 import com.example.trendlog.global.exception.trend.TrendNotFoundException;
 import com.example.trendlog.global.exception.user.UserAccessDeniedException;
 import com.example.trendlog.global.exception.user.UserNotFoundException;
+import com.example.trendlog.repository.post.PostRepository;
 import com.example.trendlog.repository.trend.*;
 import com.example.trendlog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,7 @@ public class TrendService {
     private final RecentTrendRepository recentTrendRepository;
     private final TrendCommentRepository trendCommentRepository;
     private final TrendCommentLikeReposity trendCommentLikeReposity;
+    private final PostRepository postRepository;
 
     /**
      * 트렌드 생성
@@ -93,11 +95,8 @@ public class TrendService {
         boolean isScrapped = false;
 
         if (user != null) {
-            System.out.println("ddddd");
             isLiked = trendLikeRepository.existsByTrendAndUser(trend, user);
             isScrapped = trendScrapRepository.existsByTrendAndUser(trend, user);
-        }else{
-            System.out.println("sssss");
         }
 
         return TrendDetailResponse.from(trend,comments,isLiked,isScrapped);
@@ -151,9 +150,11 @@ public class TrendService {
         Optional<TrendScrap> existingScrap=trendScrapRepository.findByUserAndTrend(user,trend);
         if(existingScrap.isPresent()){
             trendScrapRepository.delete(existingScrap.get());
+            trend.decreaseScrapCount();
         }else{
             TrendScrap scrap=TrendScrap.of(user,trend);
             trendScrapRepository.save(scrap);
+            trend.increaseScrapCount();
         }
     }
 
@@ -286,4 +287,26 @@ public class TrendService {
         }
     }
 
+    /**
+     * 트렌드 분석 조회
+     */
+    public TrendStatisticsResponse getTrendStatistics(Long trendId){
+        Trend trend = trendRepository.findById(trendId)
+                .orElseThrow(TrendNotFoundException::new); //TREND-002
+
+        int postCount=postRepository.countByTrend(trend);
+        int relatedPostLikeCount = postRepository.sumLikesByTrend(trend);
+
+        // 임의값
+        int snsMentionCount = ThreadLocalRandom.current().nextInt(30, 100);
+        int searchCount = ThreadLocalRandom.current().nextInt(50, 150);
+
+        return TrendStatisticsResponse.from(
+                trend,
+                postCount,
+                relatedPostLikeCount,
+                snsMentionCount,
+                searchCount
+        );
+    }
 }

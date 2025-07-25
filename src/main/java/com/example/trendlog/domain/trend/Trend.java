@@ -37,6 +37,9 @@ public class Trend {
     private Integer likeCount=0;
 
     @Builder.Default
+    private Integer scrapCount=0;
+
+    @Builder.Default
     private Integer commentCount = 0;
 
     @Builder.Default
@@ -82,6 +85,12 @@ public class Trend {
     public void decreaseLikeCount() {
         this.likeCount = Math.max(0, this.likeCount - 1);
     }
+
+    public void increaseScrapCount() {
+        this.scrapCount++;
+    }
+
+    public void decreaseScrapCount() { this.scrapCount = Math.max(0, this.scrapCount - 1); }
 
     public void increaseCommentCount() {
         this.commentCount++;
