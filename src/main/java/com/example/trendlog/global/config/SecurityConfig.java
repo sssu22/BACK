@@ -50,6 +50,9 @@ public class SecurityConfig {
                                 HttpMethod.GET,
                                 "/api/v1/tags/popular").permitAll()
                         .requestMatchers(
+                                HttpMethod.GET,
+                                "api/v1/search/posts").permitAll()
+                        .requestMatchers(
                                 "/debug/scheduler/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
