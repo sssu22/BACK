@@ -23,10 +23,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+
+import static com.example.trendlog.global.exception.code.UserErrorCode.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -309,4 +312,31 @@ public class TrendService {
                 searchCount
         );
     }
+
+    /**
+     * 트렌드 검색
+     */
+    public TrendSearchPagedResponse searchTrends(TrendSearchCondition condition, Pageable pageable) {
+        Page<Trend> trends = trendRepository.searchAll(condition, pageable);
+
+        List<TrendSearchListResponse> responseList = trends.getContent().stream()
+                .map(TrendSearchListResponse::from)
+                .toList();
+
+        return TrendSearchPagedResponse.from(responseList, trends);
+    }
+
+    /**
+     * 스크랩된 트렌드 검색
+     */
+    public TrendSearchPagedResponse searchScrappedTrends(TrendSearchCondition condition, Pageable pageable) {
+        Page<Trend> trends = trendRepository.searchScrapped(condition, pageable);
+
+        List<TrendSearchListResponse> responseList = trends.getContent().stream()
+                .map(TrendSearchListResponse::from)
+                .toList();
+
+        return TrendSearchPagedResponse.from(responseList, trends);
+    }
+
 }

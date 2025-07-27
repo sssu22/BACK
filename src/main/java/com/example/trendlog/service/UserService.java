@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.security.Principal;
 import java.util.UUID;
 
+import static com.example.trendlog.global.exception.code.UserErrorCode.USER_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -109,5 +111,11 @@ public class UserService {
         UUID userId = getUserByEmail(principal.getName()).getId();
         return gcsService.uploadToTemp(file, userId);
     }
+
+    public User findUser(Principal principal) {
+        return userRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new AppException(USER_NOT_FOUND));
+    }
+
 
 }

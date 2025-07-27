@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface TrendRepository extends JpaRepository<Trend, Long> {
+public interface TrendRepository extends JpaRepository<Trend, Long>, TrendRepositoryCustom {
     // 최근 일주일 내에 생성된 트렌드 중 상위 점수순 정렬 (popular)
     List<Trend> findTop5ByCreatedAtAfterOrderByScoreDesc(java.time.LocalDateTime after);
 
