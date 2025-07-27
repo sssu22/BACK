@@ -40,7 +40,8 @@ public class SecurityConfig {
                                 "/api/v1/trends",
                                 "/api/v1/trends/{trendId}",
                                 "/api/v1/trends/recent",
-                                "/api/v1/trends/popular").permitAll()
+                                "/api/v1/trends/popular",
+                                "/api/v1/trends/{trendId}/stats").permitAll()
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/v1/posts",

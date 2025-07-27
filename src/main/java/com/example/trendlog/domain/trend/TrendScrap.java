@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -25,6 +26,14 @@ public class TrendScrap {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trend_id", nullable = false)
     private Trend trend;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     public TrendScrap(User user, Trend trend) {
         this.user = user;

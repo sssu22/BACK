@@ -1,5 +1,6 @@
 package com.example.trendlog.repository.trend;
 
+import com.example.trendlog.domain.User;
 import com.example.trendlog.domain.trend.Trend;
 import com.example.trendlog.domain.trend.TrendCategory;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ public interface TrendRepository extends JpaRepository<Trend, Long> {
     List<Trend> findTop3ByScoreIncrease(Pageable pageable);
 
     boolean existsByTitle(String title);
+    boolean existsByTitleAndCategory(String title, TrendCategory category);
 
     List<Trend> findByCategory(TrendCategory category);
 
