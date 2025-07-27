@@ -1,5 +1,6 @@
 package com.example.trendlog.controller;
 
+import com.example.trendlog.domain.post.PostSearchCondition;
 import com.example.trendlog.dto.request.post.PostCommentRequest;
 import com.example.trendlog.dto.request.post.PostCreateUpdateRequest;
 import com.example.trendlog.dto.response.post.PostPagedResponse;
@@ -12,6 +13,9 @@ import com.example.trendlog.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -125,6 +129,28 @@ public class PostController implements PostSwaggerSpec {
     ) {
         postCommentService.likePostComment(principal, postId, commentId);
         return ResponseEntity.ok(DataResponse.ok());
+    }
+
+    // 게시글에서 게시글 이름, 게시글 내용, 게시글 태그, 장소 중에서 해당하는 거 검색
+    @GetMapping("/search")
+    public PostPagedResponse searchPosts(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "전체") String emotion,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "latest") String sortBy
+    ) {
+        PostSearchCondition condition = new PostSearchCondition();
+        condition.setKeyword(keyword);
+        condition.setEmotion(emotion);
+
+        Sort sort = switch (sortBy) {
+            case "trend" -> Sort.by(Sort.Direction.DESC, "trendScore"); // 커스텀 키
+            default -> Sort.by(Sort.Direction.DESC, "createdAt");
+        };
+
+        Pageable pageable = PageRequest.of(page-1, size, sort);
+        return postService.searchAllPosts(condition, pageable);
     }
 
 }

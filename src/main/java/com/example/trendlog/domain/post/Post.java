@@ -29,8 +29,6 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trend_id")
     private Trend trend;
-    @Lob
-    @Column(columnDefinition = "TEXT")
     private String description;
     private String location; // 위치명
     private Double latitude; // 위도

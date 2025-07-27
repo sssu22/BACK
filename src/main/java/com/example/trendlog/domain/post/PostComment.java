@@ -21,8 +21,6 @@ public class PostComment {
     @Column(name = "post_comment_id")
     private Long id;
 
-    @Lob
-    @Column(columnDefinition = "TEXT")
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)

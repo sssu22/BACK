@@ -23,6 +23,16 @@ repositories {
 	mavenCentral()
 }
 
+def querydslOutputDir = layout.buildDirectory.dir("generated/querydsl")
+
+sourceSets {
+	main {
+		java {
+			srcDir querydslOutputDir
+		}
+	}
+}
+
 dependencies {
 	// 기본 기능
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -32,6 +42,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	// Querydsl
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
 
 	//swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'

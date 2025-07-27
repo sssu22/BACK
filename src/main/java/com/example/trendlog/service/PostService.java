@@ -10,6 +10,7 @@ import com.example.trendlog.global.exception.trend.TrendNotFoundException;
 import com.example.trendlog.repository.UserRepository;
 import com.example.trendlog.repository.post.*;
 import com.example.trendlog.repository.trend.TrendRepository;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,7 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.example.trendlog.global.exception.code.PostErrorCode.POST_NOT_FOUND;
@@ -42,6 +46,8 @@ public class PostService {
     private final PostCommentService postCommentService;
     private final KakaoLocalService kakaoLocalService;
     private final TrendRepository trendRepository;
+    private final JPAQueryFactory queryFactory;
+
 
     // 게시글 생성
     public void createPost(Principal principal, PostCreateUpdateRequest request) {
@@ -242,6 +248,51 @@ public class PostService {
             case "latest" -> Sort.by(Sort.Direction.DESC, "createdAt");
             default -> Sort.by(Sort.Direction.DESC, "createdAt");
         };
+    }
+
+//    public PostPagedResponse searchAllPosts(PostSearchCondition condition, Pageable pageable) {
+//        Page<Post> posts = postRepository.searchAll(condition, pageable);
+//
+//        List<PostListResponse> responseList = posts.getContent().stream()
+//                .map(PostListResponse::from) // Post → PostListResponse 로 변환
+//                .toList();
+//
+//        return PostPagedResponse.from(responseList, posts);
+//    }
+
+    // 태그 조합해서 게시글 검색
+    public PostPagedResponse searchAllPosts(PostSearchCondition condition, Pageable pageable) {
+        Page<Post> posts = postRepository.searchAll(condition, pageable);
+        List<Long> postIds = posts.getContent().stream()
+                .map(Post::getId)
+                .toList();
+
+        if (postIds.isEmpty()) {
+            return PostPagedResponse.from(List.of(), posts);
+        }
+
+        QPost post = QPost.post;
+        QPostTag postTag = QPostTag.postTag;
+        QTag tag = QTag.tag;
+
+        Map<Long, List<String>> tagMap = queryFactory
+                .select(post.id, tag.name)
+                .from(post)
+                .join(post.tags, postTag)
+                .join(postTag.tag, tag)
+                .where(post.id.in(postIds))
+                .fetch()
+                .stream()
+                .collect(Collectors.groupingBy(
+                        tuple -> Objects.requireNonNull(tuple.get(post.id)),
+                        Collectors.mapping(tuple -> Objects.requireNonNull(tuple.get(tag.name)), Collectors.toList())
+                ));
+
+        List<PostListResponse> responseList = posts.getContent().stream()
+                .map(p -> PostListResponse.from(p, tagMap.getOrDefault(p.getId(), List.of())))
+                .toList();
+
+        return PostPagedResponse.from(responseList, posts);
     }
 
 
