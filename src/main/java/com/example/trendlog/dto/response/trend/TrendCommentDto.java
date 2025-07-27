@@ -15,17 +15,9 @@ public class TrendCommentDto {
     private final String authorProfileImageUrl;
     private final LocalDateTime createAt;
     private final Integer likeCount;
+    private final boolean isLiked;
 
-    public TrendCommentDto(Long commentId, String content, String authorName, String authorProfileImageUrl, LocalDateTime createAt, Integer likeCount) {
-        this.commentId = commentId;
-        this.content = content;
-        this.authorName = authorName;
-        this.authorProfileImageUrl = authorProfileImageUrl;
-        this.createAt = createAt;
-        this.likeCount = likeCount;
-    }
-
-    public static TrendCommentDto from(TrendComment comment) {
+    public static TrendCommentDto from(TrendComment comment,boolean isLiked) {
         return TrendCommentDto.builder()
                 .commentId(comment.getId())
                 .content(comment.getContent())
@@ -33,6 +25,7 @@ public class TrendCommentDto {
                 .authorProfileImageUrl(comment.getUser().getProfileImage())
                 .createAt(comment.getCreatedAt())
                 .likeCount(comment.getLikeCount())
+                .isLiked(isLiked)
                 .build();
     }
 }

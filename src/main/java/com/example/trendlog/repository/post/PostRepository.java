@@ -1,7 +1,9 @@
 package com.example.trendlog.repository.post;
 
+import com.example.trendlog.domain.User;
 import com.example.trendlog.domain.post.Emotion;
 import com.example.trendlog.domain.post.Post;
+import com.example.trendlog.domain.trend.Trend;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,4 +37,20 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findAllByDeletedFalseAndUserId(UUID userId, Pageable pageable);
 
     Page<Post> findAllByDeletedFalseAndUserIdAndDistrict(UUID userId, String district, Pageable pageable);
+
+    int countByTrendAndDeletedFalse(Trend trend);
+
+    @Query("SELECT COALESCE(SUM(p.likeCount), 0) FROM Post p WHERE p.trend = :trend AND p.deleted = false")
+    int sumLikesByTrend(@Param("trend") Trend trend);
+
+    int countByUserAndDeletedFalse(User user);
+
+    @Query("SELECT AVG(t.score) FROM Post p JOIN p.trend t WHERE p.user = :user AND p.deleted = false")
+    Integer findAverageTrendScoreByUser(@Param("user") User user);
+
+    @Query("SELECT COUNT(DISTINCT p.district) FROM Post p WHERE p.user=:user AND p.deleted=false")
+    int countDistinctDistrictsByUser(@Param("user") User user);
+
+    List<Post> findTop3ByUserAndDeletedFalseOrderByCreatedAtDesc(User user);
+
 }

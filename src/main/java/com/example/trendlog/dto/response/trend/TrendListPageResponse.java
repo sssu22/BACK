@@ -8,17 +8,11 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Builder
 @Getter
 public class TrendListPageResponse {
     private final PageInfo pageInfo;
     private final List<TrendListResponse> content;
-
-    @Builder
-    public TrendListPageResponse(PageInfo pageInfo, List<TrendListResponse> content) {
-        this.pageInfo = pageInfo;
-        this.content = content;
-    }
 
     public static TrendListPageResponse from(Page<Trend> page){
         return TrendListPageResponse.builder()

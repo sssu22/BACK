@@ -5,6 +5,7 @@ import com.example.trendlog.domain.trend.Trend;
 import lombok.Builder;
 import lombok.Getter;
 
+@Builder
 @Getter
 public class RecentTrendResponse {
     private final Long trendId;
@@ -12,15 +13,6 @@ public class RecentTrendResponse {
     private final String tag;
     private final Integer score;
     private final Integer increaseScore;
-
-    @Builder
-    public RecentTrendResponse(Long trendId, String title, String tag, Integer score, Integer increaseScore) {
-        this.trendId = trendId;
-        this.title = title;
-        this.tag = tag;
-        this.score = score;
-        this.increaseScore = increaseScore;
-    }
 
     public static RecentTrendResponse from(RecentTrend recentTrend) {
         Trend trend= recentTrend.getTrend();

@@ -2,10 +2,7 @@ package com.example.trendlog.global.docs;
 
 import com.example.trendlog.dto.request.trend.TrendCommentCreateRequest;
 import com.example.trendlog.dto.request.trend.TrendCreateRequest;
-import com.example.trendlog.dto.response.trend.PopularTrendResponse;
-import com.example.trendlog.dto.response.trend.RecentTrendResponse;
-import com.example.trendlog.dto.response.trend.TrendDetailResponse;
-import com.example.trendlog.dto.response.trend.TrendListPageResponse;
+import com.example.trendlog.dto.response.trend.*;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.global.dto.ErrorResponse;
 import com.example.trendlog.global.security.userdetails.UserDetailsImpl;
@@ -28,7 +25,7 @@ import java.util.List;
 @Tag(name = "Trends", description = "트렌드 관련 API")
 public interface TrendSwaggerSpec {
 
-    @Operation(summary = "트렌드 생성", description = "이름, 설명, 카테고리로 트렌드를 생성합니다.")
+    @Operation(summary = "트렌드 생성", description = "이름, 설명, 카테고리로 트렌드를 생성합니다. FOOD, LIFESTYLE, CULTURE, HEALTH, INVESTMENT, SOCIAL, ETC ")
     @SecurityRequirement(name = "bearerAuth")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "트렌드 생성 성공"),
@@ -41,7 +38,7 @@ public interface TrendSwaggerSpec {
             @ApiResponse(responseCode = "400", description = "유효하지 않은 트렌드 카테고리 (TREND-010)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public ResponseEntity<DataResponse<Void>> createTrend(
+    public ResponseEntity<DataResponse<TrendCreateResponse>> createTrend(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Valid @RequestBody TrendCreateRequest request
     );
@@ -51,7 +48,7 @@ public interface TrendSwaggerSpec {
             @ApiResponse(responseCode = "200", description = "트렌드 목록 조회 성공"),
             @ApiResponse(responseCode = "400", description = "유효하지 않은 페이지 요청 (TREND-011)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            })
+    })
     public ResponseEntity<DataResponse<TrendListPageResponse>> getTrendList(Pageable pageable);
 
     @Operation(summary = "트렌드 상세 조회", description = "트렌드의 내용을 상세 조회합니다.")
@@ -62,7 +59,7 @@ public interface TrendSwaggerSpec {
             @ApiResponse(responseCode = "400", description = "유효하지 않은 트렌드 카테고리 (TREND-010)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public ResponseEntity<DataResponse<TrendDetailResponse>> getTrendDetail(@PathVariable Long trendId);
+    public ResponseEntity<DataResponse<TrendDetailResponse>> getTrendDetail(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long trendId);
 
     @Operation(summary = "트렌드 댓글 작성", description = "트렌드의 댓글을 생성합니다.")
     @SecurityRequirement(name = "bearerAuth")
@@ -123,7 +120,7 @@ public interface TrendSwaggerSpec {
     @Operation(summary = "최고 트렌드 목록", description = "최고 트렌드 목록 점수 top5를 반환합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "최고 트렌드 목록 조회 성공"),
-            })
+    })
     public ResponseEntity<DataResponse<List<PopularTrendResponse>>> getPopularTrend();
 
     @Operation(summary = "최근 트렌드 목록", description = "최근 트렌드 목록 점수 상승률 top3를 반환합니다.")
@@ -144,4 +141,12 @@ public interface TrendSwaggerSpec {
     public ResponseEntity<DataResponse<Void>> likeTrendComment(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long commentId);
+
+    @Operation(summary = "트렌드 분석 조회", description = "트렌드의 분석 내용을 상세 조회합니다.(sns 언급량과 검색량은 현재 임의의 값")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "좋아요/좋아요 취소 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 트렌드 (TREND-002)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<DataResponse<TrendStatisticsResponse>> getTrendStatistics(@PathVariable Long trendId);
 }

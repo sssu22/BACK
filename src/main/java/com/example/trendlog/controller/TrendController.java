@@ -1,5 +1,6 @@
 package com.example.trendlog.controller;
 
+import com.example.trendlog.domain.User;
 import com.example.trendlog.dto.request.trend.TrendCommentCreateRequest;
 import com.example.trendlog.dto.request.trend.TrendCreateRequest;
 import com.example.trendlog.dto.response.trend.*;
@@ -27,12 +28,12 @@ import java.util.List;
 public class TrendController implements TrendSwaggerSpec {
     private final TrendService trendService;
     @PostMapping
-    public ResponseEntity<DataResponse<Void>> createTrend(
+    public ResponseEntity<DataResponse<TrendCreateResponse>> createTrend(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Valid @RequestBody TrendCreateRequest request
     ){
-        trendService.createTrend(userDetails.getUserId(),request);
-        return ResponseEntity.ok(DataResponse.ok());
+        TrendCreateResponse response = trendService.createTrend(userDetails.getUserId(), request);
+        return ResponseEntity.ok(DataResponse.from(response));
     }
 
     @GetMapping
@@ -43,8 +44,11 @@ public class TrendController implements TrendSwaggerSpec {
     }
 
     @GetMapping("/{trendId}")
-    public ResponseEntity<DataResponse<TrendDetailResponse>> getTrendDetail(@PathVariable Long trendId){
-        TrendDetailResponse response=trendService.getTrendDetail(trendId);
+    public ResponseEntity<DataResponse<TrendDetailResponse>> getTrendDetail(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable Long trendId){
+        User user = (userDetails != null) ? userDetails.getUser() : null;
+        TrendDetailResponse response=trendService.getTrendDetail(user,trendId);
         return ResponseEntity.ok(DataResponse.from(response));
     }
     @PostMapping("/{trendId}/comments")
@@ -99,6 +103,12 @@ public class TrendController implements TrendSwaggerSpec {
             @PathVariable Long commentId){
         trendService.likeComment(commentId,userDetails.getUserId());
         return ResponseEntity.ok(DataResponse.ok());
+    }
+
+    @GetMapping("/{trendId}/stats")
+    public ResponseEntity<DataResponse<TrendStatisticsResponse>> getTrendStatistics(@PathVariable Long trendId){
+        TrendStatisticsResponse response=trendService.getTrendStatistics(trendId);
+        return ResponseEntity.ok(DataResponse.from(response));
     }
 
 
