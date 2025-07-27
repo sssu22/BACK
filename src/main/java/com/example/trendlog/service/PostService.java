@@ -324,4 +324,35 @@ public class PostService {
         return PostPagedResponse.from(responseList, posts);
     }
 
+    // 내가 스크랩한 게시글
+    public PostPagedResponse searchScrappedPosts(PostSearchCondition condition, Pageable pageable) {
+        Page<Post> posts = postRepository.searchScrapped(condition, pageable);
+
+        List<Long> postIds = posts.getContent().stream()
+                .map(Post::getId)
+                .toList();
+
+        if (postIds.isEmpty()) {
+            return PostPagedResponse.from(List.of(), posts);
+        }
+
+        Map<Long, List<String>> tagMap = queryFactory
+                .select(QPost.post.id, QTag.tag.name)
+                .from(QPost.post)
+                .join(QPost.post.tags, QPostTag.postTag)
+                .join(QPostTag.postTag.tag, QTag.tag)
+                .where(QPost.post.id.in(postIds))
+                .fetch()
+                .stream()
+                .collect(Collectors.groupingBy(
+                        tuple -> tuple.get(QPost.post.id),
+                        Collectors.mapping(tuple -> tuple.get(QTag.tag.name), Collectors.toList())
+                ));
+
+        List<PostListResponse> responseList = posts.getContent().stream()
+                .map(p -> PostListResponse.from(p, tagMap.getOrDefault(p.getId(), List.of())))
+                .toList();
+
+        return PostPagedResponse.from(responseList, posts);
+    }
 }

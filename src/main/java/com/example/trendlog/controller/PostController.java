@@ -183,6 +183,32 @@ public class PostController implements PostSwaggerSpec {
         return ResponseEntity.ok(DataResponse.from(postPagedResponse));
     }
 
+    @GetMapping("/search/scrap")
+    public ResponseEntity<DataResponse<PostPagedResponse>> searchScrappedPosts(
+            Principal principal,
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "all") String emotion,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "latest") String sortBy
+    ) {
+        User user = postService.findUser(principal);
+
+        PostSearchCondition condition = new PostSearchCondition();
+        condition.setKeyword(keyword);
+        condition.setEmotion(emotion);
+        condition.setUserId(user.getId());
+
+        Sort sort = switch (sortBy) {
+            case "trend" -> Sort.by(Sort.Direction.DESC, "trendScore");
+            default -> Sort.by(Sort.Direction.DESC, "createdAt");
+        };
+
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+        PostPagedResponse postPagedResponse = postService.searchScrappedPosts(condition, pageable);
+        return ResponseEntity.ok(DataResponse.from(postPagedResponse));
+    }
+
 
 
 }

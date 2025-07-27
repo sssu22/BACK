@@ -10,4 +10,6 @@ public interface PostRepositoryCustom {
 
     Page<Post> searchMy(PostSearchCondition condition, Pageable pageable);
 
+    Page<Post> searchScrapped(PostSearchCondition condition, Pageable pageable);
+
 }

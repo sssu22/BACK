@@ -99,6 +99,49 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         return new PageImpl<>(content, pageable, total != null ? total : 0L);
     }
 
+    @Override
+    public Page<Post> searchScrapped(PostSearchCondition condition, Pageable pageable) {
+        QPost post = QPost.post;
+        QTrend trend = QTrend.trend;
+        QPostTag postTag = QPostTag.postTag;
+        QTag tag = QTag.tag;
+        QPostScrap scrap = QPostScrap.postScrap;
+
+        List<Post> content = queryFactory
+                .selectFrom(post)
+                .leftJoin(post.trend, trend).fetchJoin()
+                .leftJoin(post.tags, postTag)
+                .leftJoin(postTag.tag, tag)
+                .join(scrap).on(scrap.post.eq(post))
+                .where(
+                        scrap.user.id.eq(condition.getUserId()), // 스크랩한 게시글 필터
+                        keywordMatch(condition.getKeyword(), post, tag, trend),
+                        emotionMatch(condition.getEmotion(), post)
+                )
+                .orderBy(getSortOrder(pageable, post, trend))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .distinct()
+                .fetch();
+
+        // count 쿼리
+        Long total = queryFactory
+                .select(post.countDistinct())
+                .from(post)
+                .leftJoin(post.tags, postTag)
+                .leftJoin(postTag.tag, tag)
+                .leftJoin(post.trend, trend)
+                .join(scrap).on(scrap.post.eq(post))
+                .where(
+                        scrap.user.id.eq(condition.getUserId()),
+                        keywordMatch(condition.getKeyword(), post, tag, trend),
+                        emotionMatch(condition.getEmotion(), post)
+                )
+                .fetchOne();
+
+        return new PageImpl<>(content, pageable, total != null ? total : 0L);
+    }
+
 
     // 키워드 검색 조건: 제목, 내용, 장소
     private BooleanExpression keywordMatch(String keyword, QPost post, QTag tag, QTrend trend) {
