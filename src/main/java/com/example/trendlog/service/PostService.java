@@ -237,7 +237,7 @@ public class PostService {
                 .orElseThrow(() -> new AppException(POST_NOT_FOUND));
     }
 
-    private User findUser(Principal principal) {
+    public User findUser(Principal principal) {
         return userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new AppException(USER_NOT_FOUND));
     }
@@ -250,15 +250,6 @@ public class PostService {
         };
     }
 
-//    public PostPagedResponse searchAllPosts(PostSearchCondition condition, Pageable pageable) {
-//        Page<Post> posts = postRepository.searchAll(condition, pageable);
-//
-//        List<PostListResponse> responseList = posts.getContent().stream()
-//                .map(PostListResponse::from) // Post → PostListResponse 로 변환
-//                .toList();
-//
-//        return PostPagedResponse.from(responseList, posts);
-//    }
 
     // 태그 조합해서 게시글 검색
     public PostPagedResponse searchAllPosts(PostSearchCondition condition, Pageable pageable) {
@@ -295,7 +286,42 @@ public class PostService {
         return PostPagedResponse.from(responseList, posts);
     }
 
+    // 내 게시글 검색
+    public PostPagedResponse searchMyPosts(PostSearchCondition condition, Pageable pageable) {
+        // 내가 쓴 게시글만 검색
+        Page<Post> posts = postRepository.searchMy(condition, pageable);
 
+        List<Long> postIds = posts.getContent().stream()
+                .map(Post::getId)
+                .toList();
 
+        if (postIds.isEmpty()) {
+            return PostPagedResponse.from(List.of(), posts);
+        }
+
+        QPost post = QPost.post;
+        QPostTag postTag = QPostTag.postTag;
+        QTag tag = QTag.tag;
+
+        // 게시글 ID에 해당하는 전체 태그 조회
+        Map<Long, List<String>> tagMap = queryFactory
+                .select(post.id, tag.name)
+                .from(post)
+                .join(post.tags, postTag)
+                .join(postTag.tag, tag)
+                .where(post.id.in(postIds))
+                .fetch()
+                .stream()
+                .collect(Collectors.groupingBy(
+                        tuple -> Objects.requireNonNull(tuple.get(post.id)),
+                        Collectors.mapping(tuple -> Objects.requireNonNull(tuple.get(tag.name)), Collectors.toList())
+                ));
+
+        List<PostListResponse> responseList = posts.getContent().stream()
+                .map(p -> PostListResponse.from(p, tagMap.getOrDefault(p.getId(), List.of())))
+                .toList();
+
+        return PostPagedResponse.from(responseList, posts);
+    }
 
 }

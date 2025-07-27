@@ -1,5 +1,6 @@
 package com.example.trendlog.controller;
 
+import com.example.trendlog.domain.User;
 import com.example.trendlog.domain.post.PostSearchCondition;
 import com.example.trendlog.dto.request.post.PostCommentRequest;
 import com.example.trendlog.dto.request.post.PostCreateUpdateRequest;
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -133,9 +135,9 @@ public class PostController implements PostSwaggerSpec {
 
     // 게시글에서 게시글 이름, 게시글 내용, 게시글 태그, 장소 중에서 해당하는 거 검색
     @GetMapping("/search")
-    public PostPagedResponse searchPosts(
+    public ResponseEntity<DataResponse<PostPagedResponse>> searchPosts(
             @RequestParam String keyword,
-            @RequestParam(defaultValue = "전체") String emotion,
+            @RequestParam(defaultValue = "all") String emotion,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "latest") String sortBy
@@ -150,8 +152,38 @@ public class PostController implements PostSwaggerSpec {
         };
 
         Pageable pageable = PageRequest.of(page-1, size, sort);
-        return postService.searchAllPosts(condition, pageable);
+        PostPagedResponse postPagedResponse = postService.searchAllPosts(condition, pageable);
+        return ResponseEntity.ok(DataResponse.from(postPagedResponse));
     }
+
+    // 내 게시글 검색
+    @GetMapping("/search/my")
+    public ResponseEntity<DataResponse<PostPagedResponse>> searchMyPosts(
+            Principal principal,
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "all") String emotion,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "latest") String sortBy
+    ) {
+        User user = postService.findUser(principal);
+
+        PostSearchCondition condition = new PostSearchCondition();
+        condition.setKeyword(keyword);
+        condition.setEmotion(emotion);
+        condition.setUserId(user.getId());
+
+        Sort sort = switch (sortBy) {
+            case "trend" -> Sort.by(Sort.Direction.DESC, "trendScore"); // 커스텀 키
+            default -> Sort.by(Sort.Direction.DESC, "createdAt");
+        };
+
+        Pageable pageable = PageRequest.of(page-1, size, sort);
+        PostPagedResponse postPagedResponse = postService.searchMyPosts(condition, pageable);
+        return ResponseEntity.ok(DataResponse.from(postPagedResponse));
+    }
+
+
 
 }
 

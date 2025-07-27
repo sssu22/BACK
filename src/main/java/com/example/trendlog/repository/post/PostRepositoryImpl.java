@@ -33,7 +33,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .leftJoin(post.tags, postTag)
                 .leftJoin(postTag.tag, tag)
                 .where(
-                        keywordMatch(condition.getKeyword(), post, tag),
+                        keywordMatch(condition.getKeyword(), post, tag, trend),
                         emotionMatch(condition.getEmotion(), post)
                 )
                 .orderBy(getSortOrder(pageable, post, trend))
@@ -51,7 +51,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .leftJoin(post.tags, postTag)
                 .leftJoin(postTag.tag, tag)
                 .where(
-                        keywordMatch(condition.getKeyword(), post, tag),
+                        keywordMatch(condition.getKeyword(), post, tag, trend),
                         emotionMatch(condition.getEmotion(), post)
                 )
                 .fetchOne();
@@ -60,36 +60,81 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         return new PageImpl<>(content, pageable, safeTotal);
     }
 
+    @Override
+    public Page<Post> searchMy(PostSearchCondition condition, Pageable pageable) {
+        QPost post = QPost.post;
+        QTrend trend = QTrend.trend;
+        QPostTag postTag = QPostTag.postTag;
+        QTag tag = QTag.tag;
+
+        List<Post> content = queryFactory
+                .selectFrom(post)
+                .leftJoin(post.trend, trend).fetchJoin()
+                .leftJoin(post.tags, postTag)
+                .leftJoin(postTag.tag, tag)
+                .where(
+                        post.user.id.eq(condition.getUserId()), // 작성자 필터
+                        keywordMatch(condition.getKeyword(), post, tag, trend),
+                        emotionMatch(condition.getEmotion(), post)
+                )
+                .orderBy(getSortOrder(pageable, post, trend))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .distinct()
+                .fetch();
+
+        Long total = queryFactory
+                .select(post.countDistinct())
+                .from(post)
+                .leftJoin(post.trend, trend)
+                .leftJoin(post.tags, postTag)
+                .leftJoin(postTag.tag, tag)
+                .where(
+                        post.user.id.eq(condition.getUserId()), // 작성자 필터
+                        keywordMatch(condition.getKeyword(), post, tag, trend),
+                        emotionMatch(condition.getEmotion(), post)
+                )
+                .fetchOne();
+
+        return new PageImpl<>(content, pageable, total != null ? total : 0L);
+    }
 
 
     // 키워드 검색 조건: 제목, 내용, 장소
-    private BooleanExpression keywordMatch(String keyword, QPost post, QTag tag) {
+    private BooleanExpression keywordMatch(String keyword, QPost post, QTag tag, QTrend trend) {
         if (!StringUtils.hasText(keyword)) return null;
 
         return post.title.containsIgnoreCase(keyword)
                 .or(post.description.containsIgnoreCase(keyword))
                 .or(post.location.containsIgnoreCase(keyword))
-                .or(tag.name.containsIgnoreCase(keyword));
+                .or(tag.name.containsIgnoreCase(keyword))
+                .or(trend.title.containsIgnoreCase(keyword));
     }
 
     // 감정 필터
     private BooleanExpression emotionMatch(String emotion, QPost post) {
-        if (!StringUtils.hasText(emotion) || emotion.equals("전체")) return null;
+        if (!StringUtils.hasText(emotion) || emotion.equals("all")) return null;
         return post.emotion.stringValue().eq(emotion);
     }
 
     // 정렬 조건 (latest, trend)
-    private OrderSpecifier<?> getSortOrder(Pageable pageable, QPost post, QTrend trend) {
+    private OrderSpecifier<?>[] getSortOrder(Pageable pageable, QPost post, QTrend trend) {
         for (Sort.Order order : pageable.getSort()) {
             String property = order.getProperty();
             boolean asc = order.isAscending();
 
             return switch (property) {
-                case "createdAt" -> asc ? post.createdAt.asc() : post.createdAt.desc();
-                case "trendScore" -> asc ? trend.score.asc() : trend.score.desc();
-                default -> post.createdAt.desc();
+                case "createdAt" -> new OrderSpecifier[]{
+                        asc ? post.createdAt.asc() : post.createdAt.desc()
+                };
+                case "trendScore" -> new OrderSpecifier[]{
+                        asc ? trend.score.asc() : trend.score.desc(),
+                        post.createdAt.desc() // 같은 점수면 최신순
+                };
+                default -> new OrderSpecifier[]{post.createdAt.desc()};
             };
         }
-        return post.createdAt.desc();
+        return new OrderSpecifier[]{post.createdAt.desc()};
     }
+
 }

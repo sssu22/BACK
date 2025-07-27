@@ -6,5 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface PostRepositoryCustom {
-    public Page<Post> searchAll(PostSearchCondition condition, Pageable pageable);
+    Page<Post> searchAll(PostSearchCondition condition, Pageable pageable);
+
+    Page<Post> searchMy(PostSearchCondition condition, Pageable pageable);
+
 }
