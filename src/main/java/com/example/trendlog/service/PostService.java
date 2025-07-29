@@ -10,6 +10,7 @@ import com.example.trendlog.global.exception.trend.TrendNotFoundException;
 import com.example.trendlog.repository.UserRepository;
 import com.example.trendlog.repository.post.*;
 import com.example.trendlog.repository.trend.TrendRepository;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,7 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.example.trendlog.global.exception.code.PostErrorCode.POST_NOT_FOUND;
@@ -42,6 +46,8 @@ public class PostService {
     private final PostCommentService postCommentService;
     private final KakaoLocalService kakaoLocalService;
     private final TrendRepository trendRepository;
+    private final JPAQueryFactory queryFactory;
+
 
     // 게시글 생성
     public void createPost(Principal principal, PostCreateUpdateRequest request) {
@@ -231,7 +237,7 @@ public class PostService {
                 .orElseThrow(() -> new AppException(POST_NOT_FOUND));
     }
 
-    private User findUser(Principal principal) {
+    public User findUser(Principal principal) {
         return userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new AppException(USER_NOT_FOUND));
     }
@@ -245,6 +251,108 @@ public class PostService {
     }
 
 
+    // 태그 조합해서 게시글 검색
+    public PostPagedResponse searchAllPosts(PostSearchCondition condition, Pageable pageable) {
+        Page<Post> posts = postRepository.searchAll(condition, pageable);
+        List<Long> postIds = posts.getContent().stream()
+                .map(Post::getId)
+                .toList();
 
+        if (postIds.isEmpty()) {
+            return PostPagedResponse.from(List.of(), posts);
+        }
 
+        QPost post = QPost.post;
+        QPostTag postTag = QPostTag.postTag;
+        QTag tag = QTag.tag;
+
+        Map<Long, List<String>> tagMap = queryFactory
+                .select(post.id, tag.name)
+                .from(post)
+                .join(post.tags, postTag)
+                .join(postTag.tag, tag)
+                .where(post.id.in(postIds))
+                .fetch()
+                .stream()
+                .collect(Collectors.groupingBy(
+                        tuple -> Objects.requireNonNull(tuple.get(post.id)),
+                        Collectors.mapping(tuple -> Objects.requireNonNull(tuple.get(tag.name)), Collectors.toList())
+                ));
+
+        List<PostListResponse> responseList = posts.getContent().stream()
+                .map(p -> PostListResponse.from(p, tagMap.getOrDefault(p.getId(), List.of())))
+                .toList();
+
+        return PostPagedResponse.from(responseList, posts);
+    }
+
+    // 내 게시글 검색
+    public PostPagedResponse searchMyPosts(PostSearchCondition condition, Pageable pageable) {
+        // 내가 쓴 게시글만 검색
+        Page<Post> posts = postRepository.searchMy(condition, pageable);
+
+        List<Long> postIds = posts.getContent().stream()
+                .map(Post::getId)
+                .toList();
+
+        if (postIds.isEmpty()) {
+            return PostPagedResponse.from(List.of(), posts);
+        }
+
+        QPost post = QPost.post;
+        QPostTag postTag = QPostTag.postTag;
+        QTag tag = QTag.tag;
+
+        // 게시글 ID에 해당하는 전체 태그 조회
+        Map<Long, List<String>> tagMap = queryFactory
+                .select(post.id, tag.name)
+                .from(post)
+                .join(post.tags, postTag)
+                .join(postTag.tag, tag)
+                .where(post.id.in(postIds))
+                .fetch()
+                .stream()
+                .collect(Collectors.groupingBy(
+                        tuple -> Objects.requireNonNull(tuple.get(post.id)),
+                        Collectors.mapping(tuple -> Objects.requireNonNull(tuple.get(tag.name)), Collectors.toList())
+                ));
+
+        List<PostListResponse> responseList = posts.getContent().stream()
+                .map(p -> PostListResponse.from(p, tagMap.getOrDefault(p.getId(), List.of())))
+                .toList();
+
+        return PostPagedResponse.from(responseList, posts);
+    }
+
+    // 내가 스크랩한 게시글
+    public PostPagedResponse searchScrappedPosts(PostSearchCondition condition, Pageable pageable) {
+        Page<Post> posts = postRepository.searchScrapped(condition, pageable);
+
+        List<Long> postIds = posts.getContent().stream()
+                .map(Post::getId)
+                .toList();
+
+        if (postIds.isEmpty()) {
+            return PostPagedResponse.from(List.of(), posts);
+        }
+
+        Map<Long, List<String>> tagMap = queryFactory
+                .select(QPost.post.id, QTag.tag.name)
+                .from(QPost.post)
+                .join(QPost.post.tags, QPostTag.postTag)
+                .join(QPostTag.postTag.tag, QTag.tag)
+                .where(QPost.post.id.in(postIds))
+                .fetch()
+                .stream()
+                .collect(Collectors.groupingBy(
+                        tuple -> tuple.get(QPost.post.id),
+                        Collectors.mapping(tuple -> tuple.get(QTag.tag.name), Collectors.toList())
+                ));
+
+        List<PostListResponse> responseList = posts.getContent().stream()
+                .map(p -> PostListResponse.from(p, tagMap.getOrDefault(p.getId(), List.of())))
+                .toList();
+
+        return PostPagedResponse.from(responseList, posts);
+    }
 }

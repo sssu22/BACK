@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
 
     // 삭제되지 않은 게시글을 최신순으로 조회
     Page<Post> findAllByDeletedFalseOrderByCreatedAtDesc(Pageable pageable);
