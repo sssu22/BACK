@@ -34,7 +34,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .leftJoin(postTag.tag, tag)
                 .where(
                         keywordMatch(condition.getKeyword(), post, tag, trend),
-                        emotionMatch(condition.getEmotion(), post)
+                        emotionMatch(condition.getEmotion(), post),
+                        post.deleted.eq(false) // 삭제되지 않은 것만
                 )
                 .orderBy(getSortOrder(pageable, post, trend))
                 .offset(pageable.getOffset())
@@ -52,7 +53,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .leftJoin(postTag.tag, tag)
                 .where(
                         keywordMatch(condition.getKeyword(), post, tag, trend),
-                        emotionMatch(condition.getEmotion(), post)
+                        emotionMatch(condition.getEmotion(), post),
+                        post.deleted.eq(false) // 삭제되지 않은 것만
                 )
                 .fetchOne();
         long safeTotal = total != null ? total : 0L;
@@ -75,7 +77,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .where(
                         post.user.id.eq(condition.getUserId()), // 작성자 필터
                         keywordMatch(condition.getKeyword(), post, tag, trend),
-                        emotionMatch(condition.getEmotion(), post)
+                        emotionMatch(condition.getEmotion(), post),
+                        post.deleted.eq(false) // 삭제되지 않은 것만
                 )
                 .orderBy(getSortOrder(pageable, post, trend))
                 .offset(pageable.getOffset())
@@ -92,7 +95,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .where(
                         post.user.id.eq(condition.getUserId()), // 작성자 필터
                         keywordMatch(condition.getKeyword(), post, tag, trend),
-                        emotionMatch(condition.getEmotion(), post)
+                        emotionMatch(condition.getEmotion(), post),
+                        post.deleted.eq(false) // 삭제되지 않은 것만
                 )
                 .fetchOne();
 
@@ -116,7 +120,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .where(
                         scrap.user.id.eq(condition.getUserId()), // 스크랩한 게시글 필터
                         keywordMatch(condition.getKeyword(), post, tag, trend),
-                        emotionMatch(condition.getEmotion(), post)
+                        emotionMatch(condition.getEmotion(), post),
+                        post.deleted.eq(false) // 삭제되지 않은 것만
                 )
                 .orderBy(getSortOrder(pageable, post, trend))
                 .offset(pageable.getOffset())
@@ -135,7 +140,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .where(
                         scrap.user.id.eq(condition.getUserId()),
                         keywordMatch(condition.getKeyword(), post, tag, trend),
-                        emotionMatch(condition.getEmotion(), post)
+                        emotionMatch(condition.getEmotion(), post),
+                        post.deleted.eq(false) // 삭제되지 않은 것만
                 )
                 .fetchOne();
 

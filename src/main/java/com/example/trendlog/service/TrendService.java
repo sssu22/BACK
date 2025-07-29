@@ -319,8 +319,8 @@ public class TrendService {
     public TrendSearchPagedResponse searchTrends(TrendSearchCondition condition, Pageable pageable) {
         Page<Trend> trends = trendRepository.searchAll(condition, pageable);
 
-        List<TrendSearchListResponse> responseList = trends.getContent().stream()
-                .map(TrendSearchListResponse::from)
+        List<TrendListResponse> responseList = trends.getContent().stream()
+                .map(TrendListResponse::from)
                 .toList();
 
         return TrendSearchPagedResponse.from(responseList, trends);
@@ -332,8 +332,8 @@ public class TrendService {
     public TrendSearchPagedResponse searchScrappedTrends(TrendSearchCondition condition, Pageable pageable) {
         Page<Trend> trends = trendRepository.searchScrapped(condition, pageable);
 
-        List<TrendSearchListResponse> responseList = trends.getContent().stream()
-                .map(TrendSearchListResponse::from)
+        List<TrendListResponse> responseList = trends.getContent().stream()
+                .map(TrendListResponse::from)
                 .toList();
 
         return TrendSearchPagedResponse.from(responseList, trends);

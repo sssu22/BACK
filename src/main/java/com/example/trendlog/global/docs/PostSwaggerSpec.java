@@ -23,7 +23,7 @@ import java.security.Principal;
 @Tag(name = "Posts", description = "게시글(경험) 관련 API")
 public interface PostSwaggerSpec {
 
-    @Operation(summary = "게시글 작성", description = "새로운 게시글을 작성합니다. 현재 존재하는 감정은 JOY, EXCITEMENT, NOSTALGIA, SURPRISE, LOVE 입니다.")
+    @Operation(summary = "게시글 작성", description = "새로운 게시글을 작성합니다. 현재 존재하는 감정은 JOY, EXCITEMENT, NOSTALGIA, SURPRISE, LOVE, DISAPPOINTMENT, SADNESS, ANNOYANCE, ANGER, EMBARRASSMENT 입니다.")
     @SecurityRequirement(name = "bearerAuth")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "게시글 작성 성공"),
@@ -42,8 +42,8 @@ public interface PostSwaggerSpec {
 
 
     @Operation(summary = "게시글 목록 조회"
-            , description = "정렬 및 감정 필터와 페이지네이션을 통해 게시글 목록을 조회합니다.\n " +
-            "현재 존재하는 감정은 JOY, EXCITEMENT, NOSTALGIA, SURPRISE, LOVE 입니다.")
+            , description = "정렬(latest / like) 및 감정 필터와 페이지네이션을 통해 게시글 목록을 조회합니다.\n " +
+            "현재 존재하는 감정은 JOY, EXCITEMENT, NOSTALGIA, SURPRISE, LOVE, DISAPPOINTMENT, SADNESS, ANNOYANCE, ANGER, EMBARRASSMENT 입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "게시글 목록 조회 성공")
     })

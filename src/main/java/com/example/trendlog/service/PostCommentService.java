@@ -31,10 +31,16 @@ public class PostCommentService {
     private final UserRepository userRepository;
 
     // 게시글 댓글 목록 조회
-    public List<PostCommentResponse> getPostCommentList(Long postId) {
+    public List<PostCommentResponse> getPostCommentList(User user, Long postId) {
         Post post = getPost(postId);
+        boolean isLiked;
+        if(user != null)
+            isLiked = postCommentLikeRepository.existsByUserIdAndPostCommentId(post.getUser().getId(), postId);
+        else {
+            isLiked = false;
+        }
         return postCommentRepository.findAllByPostIdAndDeletedFalseOrderByCreatedAt(postId).stream()
-                .map(PostCommentResponse::from)
+                .map(p->PostCommentResponse.from(p,isLiked))
                 .toList();
     }
 

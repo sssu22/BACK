@@ -15,14 +15,18 @@ public class PostCommentResponse {
     private String time;
     private String content;
     private int likeCount;
+    private String imageUrl;
+    private final boolean isLiked;
 
-    public static PostCommentResponse from(PostComment postComment) {
+    public static PostCommentResponse from(PostComment postComment, boolean isLiked) {
         return PostCommentResponse.builder()
                 .id(postComment.getId())
                 .userName(postComment.getUser().getName())
                 .time(formatTime(postComment.getCreatedAt()))
-                .content(postComment.isDeleted()?"[삭제된 댓글입니다.]":postComment.getContent())
+                .content(postComment.getContent())
                 .likeCount(postComment.getLikeCount())
+                .imageUrl(postComment.getUser().getProfileImage())
+                .isLiked(isLiked)
                 .build();
     }
 

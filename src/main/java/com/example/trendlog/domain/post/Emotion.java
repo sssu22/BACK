@@ -11,7 +11,12 @@ public enum Emotion {
     EXCITEMENT("흥분"),
     NOSTALGIA("향수"),
     SURPRISE("놀라움"),
-    LOVE("사랑");
+    LOVE("사랑"),
+    DISAPPOINTMENT("아쉬움"),
+    SADNESS("슬픔"),
+    ANNOYANCE("짜증"),
+    ANGER("화남"),
+    EMBARRASSMENT("당황");
 
     private final String description;
 

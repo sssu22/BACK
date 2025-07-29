@@ -9,7 +9,9 @@ public class TrendListResponse {
     private final Long trendId;
     private final String title;
     private final String tag;
+    private final String description;
     private final Integer score;
+    private final String categoryName;
 
     public static TrendListResponse from(Trend trend) {
         String firstTag = (trend.getTags() != null && !trend.getTags().isEmpty())
@@ -18,8 +20,10 @@ public class TrendListResponse {
         return TrendListResponse.builder()
                 .trendId(trend.getId())
                 .title(trend.getTitle())
-                .tag(firstTag)
+                .description(trend.getDescription())
                 .score(trend.getScore())
+                .tag(firstTag)
+                .categoryName(trend.getCategory().getDescription())
                 .build();
     }
 }

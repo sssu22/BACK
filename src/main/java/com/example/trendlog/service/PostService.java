@@ -101,15 +101,15 @@ public class PostService {
         UUID userId = null;
         boolean isLiked = false;
         boolean isScrapped = false;
-
+        User user = null;
         if (principal != null) {
-            User user = findUser(principal);
+            user = findUser(principal);
             userId = user.getId();
             isLiked = postLikeRepository.existsByUserIdAndPostId(userId, postId);
             isScrapped = postScrapRepository.existsByUserIdAndPostId(userId, postId);
         }
 
-        return PostResponse.from(post, isLiked, isScrapped, postCommentService.getPostCommentList(postId));
+        return PostResponse.from(post, isLiked, isScrapped, postCommentService.getPostCommentList(user, postId));
     }
 
     // 인기 게시글 목록 조회
@@ -244,7 +244,7 @@ public class PostService {
 
     private Sort getSort(String sortBy) {
         return switch (sortBy.toLowerCase()) {
-            case "trend" -> Sort.by(Sort.Direction.DESC, "likeCount"); // 우선 좋아요 순으로 해놓겠음
+            case "like" -> Sort.by(Sort.Direction.DESC, "likeCount"); // 우선 좋아요 순으로 해놓겠음
             case "latest" -> Sort.by(Sort.Direction.DESC, "createdAt");
             default -> Sort.by(Sort.Direction.DESC, "createdAt");
         };

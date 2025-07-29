@@ -21,7 +21,7 @@ spring:
             enable: true
 jwt:
   secret: your-super-secret-key-your-super-secret-key
-  access-token-validity: 9000000   # 15분
+  access-token-validity: 900000000   # 15분(0두개 붙임)
   refresh-token-validity: 604800000 # 7일
 gcp:
   project-id: uida-3051b
