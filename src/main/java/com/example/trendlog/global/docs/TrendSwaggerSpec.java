@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -43,13 +44,18 @@ public interface TrendSwaggerSpec {
             @Valid @RequestBody TrendCreateRequest request
     );
 
-    @Operation(summary = "트렌드 목록 조회", description = "트렌드 목록을 페이징을 통해 조회합니다.\\n\\n예시: `/api/v1/trends?page=0&size=10&sort=createdAt,desc`")
+    @Operation(summary = "트렌드 목록 조회", description = "트렌드 목록을 조회합니다.<br>sort는 score기준.<br>카테고리는 FOOD, LIFESTYLE, CULTURE, HEALTH, INVESTMENT, SOCIAL, ETC.<br>예시) http://localhost:8080/api/v1/trends?sort=score&category=all&page=0&size=10")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "트렌드 목록 조회 성공"),
             @ApiResponse(responseCode = "400", description = "유효하지 않은 페이지 요청 (TREND-011)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    public ResponseEntity<DataResponse<TrendListPageResponse>> getTrendList(Pageable pageable);
+    public ResponseEntity<DataResponse<TrendListPageResponse>> getTrendList(
+            @RequestParam(defaultValue = "score") String sort,  // createdAt, score 등
+            @RequestParam(defaultValue = "all") String category,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    );
 
     @Operation(summary = "트렌드 상세 조회", description = "트렌드의 내용을 상세 조회합니다.")
     @ApiResponses({

@@ -38,10 +38,19 @@ public class TrendController implements TrendSwaggerSpec {
 
     @GetMapping
     public ResponseEntity<DataResponse<TrendListPageResponse>> getTrendList(
-            @PageableDefault(size = 10, page = 0, sort = "createdAt", direction = Sort.Direction.DESC)Pageable pageable){
-        TrendListPageResponse response = trendService.getTrendList(pageable);
+            @RequestParam(defaultValue = "score") String sort,  // createdAt, score 등
+            @RequestParam(defaultValue = "all") String category,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        TrendListPageResponse response = trendService.getTrendList(sort, category, page, size);
         return ResponseEntity.ok(DataResponse.from(response));
     }
+//    public ResponseEntity<DataResponse<TrendListPageResponse>> getTrendList(
+//            @PageableDefault(size = 10, page = 0, sort = "createdAt", direction = Sort.Direction.DESC)Pageable pageable){
+//        TrendListPageResponse response = trendService.getTrendList(pageable);
+//        return ResponseEntity.ok(DataResponse.from(response));
+//    }
 
     @GetMapping("/{trendId}")
     public ResponseEntity<DataResponse<TrendDetailResponse>> getTrendDetail(

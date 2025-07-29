@@ -3,6 +3,7 @@ package com.example.trendlog.repository.trend;
 import com.example.trendlog.domain.User;
 import com.example.trendlog.domain.trend.Trend;
 import com.example.trendlog.domain.trend.TrendCategory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,5 +23,8 @@ public interface TrendRepository extends JpaRepository<Trend, Long>, TrendReposi
     List<Trend> findByCategory(TrendCategory category);
 
     List<Trend> findByTitleContaining(String title);
+
+    Page<Trend> findByCategory(TrendCategory category, Pageable pageable);
+
 
 }

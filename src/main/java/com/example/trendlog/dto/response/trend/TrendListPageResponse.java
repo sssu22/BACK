@@ -11,17 +11,24 @@ import java.util.stream.Collectors;
 @Builder
 @Getter
 public class TrendListPageResponse {
-    private final PageInfo pageInfo;
     private final List<TrendListResponse> content;
+    private final int currentPage;
+    private final int pageSize;
+    private final long totalElements;
+    private final int totalPages;
 
-    public static TrendListPageResponse from(Page<Trend> page){
+    public static TrendListPageResponse from(Page<Trend> page) {
+        List<TrendListResponse> contentList = page.getContent()
+                .stream()
+                .map(TrendListResponse::from)
+                .collect(Collectors.toList());
+
         return TrendListPageResponse.builder()
-                .pageInfo(PageInfo.from(page))
-                .content(page.getContent().stream()
-                        .map(TrendListResponse::from)
-                        .collect(Collectors.toList()))
+                .content(contentList)
+                .currentPage(page.getNumber())
+                .pageSize(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
                 .build();
     }
-
-
 }

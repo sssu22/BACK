@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,13 +109,37 @@ public class TrendService {
     /**
      * 트렌드 목록
      */
-    public TrendListPageResponse getTrendList(Pageable pageable) {
-        if (pageable.getPageNumber() < 0 || pageable.getPageSize() <= 0) {
+    public TrendListPageResponse getTrendList(String sort, String category, int page, int size){
+        if(page<0||size<=0){
             throw new AppException(TrendErrorCode.INVALID_PAGE_REQUEST);
         }
-        Page<Trend> page=trendRepository.findAll(pageable);
-        return TrendListPageResponse.from(page);
+        Sort sortObj = Sort.by(Sort.Direction.DESC, "score");
+        Pageable pageable = PageRequest.of(page, size, sortObj);
+        Page<Trend> trendPage;
+
+
+        if (category.equalsIgnoreCase("all")) {
+            trendPage = trendRepository.findAll(pageable);
+        } else {
+            TrendCategory categoryEnum;
+            try {
+                categoryEnum = TrendCategory.valueOf(category.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new AppException(TrendErrorCode.INVALID_CATEGORY);
+            }
+            trendPage = trendRepository.findByCategory(categoryEnum, pageable);
+        }
+
+
+        return TrendListPageResponse.from(trendPage);
     }
+//    public TrendListPageResponse getTrendList(Pageable pageable) {
+//        if (pageable.getPageNumber() < 0 || pageable.getPageSize() <= 0) {
+//            throw new AppException(TrendErrorCode.INVALID_PAGE_REQUEST);
+//        }
+//        Page<Trend> page=trendRepository.findAll(pageable);
+//        return TrendListPageResponse.from(page);
+//    }
 
     /**
      * 좋아요
