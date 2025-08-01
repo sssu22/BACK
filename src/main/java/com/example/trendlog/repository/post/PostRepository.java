@@ -53,4 +53,8 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
 
     List<Post> findTop3ByUserAndDeletedFalseOrderByCreatedAtDesc(User user);
 
+    //일단 기간은 고려 안함
+    @Query("SELECT p.user.id, p.trend.id, COUNT(p) * 6 FROM Post p WHERE p.deleted = false GROUP BY p.user.id, p.trend.id")
+    List<Object[]> fetchPostWriteScores();
+
 }
