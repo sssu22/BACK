@@ -42,6 +42,6 @@ src/main/resources/*.json
 .DS_Store
 dump.rdb
 trend_recommend_scores.csv
-
+all_trends.csv
 # querydsl
 /build/generated/

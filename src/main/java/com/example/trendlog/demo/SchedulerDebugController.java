@@ -1,6 +1,8 @@
 package com.example.trendlog.demo;
 
+import com.example.trendlog.dto.response.trend.TrendCsvDto;
 import com.example.trendlog.dto.response.trend.TrendRecommendScoreDto;
+import com.example.trendlog.service.TrendExportService;
 import com.example.trendlog.service.TrendRecommendScoreExportService;
 import com.example.trendlog.service.TrendService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -24,21 +26,29 @@ import java.util.List;
 public class SchedulerDebugController {
     private final TrendService trendService;
     private final TrendRecommendScoreExportService trendRecommendScoreExportService;
+    private final TrendExportService trendExportService;
 
     @PostMapping("/popular")
     public ResponseEntity<Void> runPopularTrendJob() {
         trendService.updatePopularTrends();
         return ResponseEntity.ok().build();
     }
+
     @PostMapping("/recent-trends")
     public ResponseEntity<String> runRecentTrendScheduler() {
         trendService.updateRecentTrends();
         return ResponseEntity.ok("최근 트렌드 스케줄러 실행 완료");
     }
-    @GetMapping("/export-csv")
+
+    @GetMapping("/export-score-csv")
     public ResponseEntity<String> exportCsv() {
         List<TrendRecommendScoreDto> scores = trendRecommendScoreExportService.getAllTrendScores();
         trendRecommendScoreExportService.exportScoresToCsv(scores);
-        return ResponseEntity.ok("CSV export 완료");
+        return ResponseEntity.ok("score CSV export 완료");
+    }
+    @GetMapping("/export-trend-csv")
+    public ResponseEntity<String> exportTrendCsv() {
+        trendExportService.exportAllTrendsToCsv();
+        return ResponseEntity.ok("trend CSV export 완료");
     }
 }
