@@ -51,4 +51,10 @@ public class SchedulerDebugController {
         trendExportService.exportAllTrendsToCsv();
         return ResponseEntity.ok("trend CSV export 완료");
     }
+
+    @GetMapping("/peak")
+    public ResponseEntity<String> peakTrend() {
+        trendService.updatePeakPeriods();
+        return ResponseEntity.ok("피크타임 갱신 완료");
+    }
 }

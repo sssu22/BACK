@@ -46,7 +46,8 @@ public class Trend {
     private Integer snsMentions=0;
 
     @Builder.Default
-    private String peakPeriod="미정";
+    @Setter
+    private String peakPeriod="피크타임이 없음";
 
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();

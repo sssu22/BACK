@@ -25,7 +25,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -136,13 +138,6 @@ public class TrendService {
 
         return TrendListPageResponse.from(trendPage);
     }
-//    public TrendListPageResponse getTrendList(Pageable pageable) {
-//        if (pageable.getPageNumber() < 0 || pageable.getPageSize() <= 0) {
-//            throw new AppException(TrendErrorCode.INVALID_PAGE_REQUEST);
-//        }
-//        Page<Trend> page=trendRepository.findAll(pageable);
-//        return TrendListPageResponse.from(page);
-//    }
 
     /**
      * 좋아요
@@ -365,6 +360,34 @@ public class TrendService {
                 .toList();
 
         return TrendSearchPagedResponse.from(responseList, trends);
+    }
+
+    /**
+     * 피크타임 저장
+     */
+    @Transactional
+    public void updatePeakPeriods() {
+        LocalDate now=LocalDate.now();
+        LocalDate startOfLastMonth = now.minusMonths(1).withDayOfMonth(1);
+        LocalDate endOfLastMonth = now.withDayOfMonth(2).minusDays(1);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 M월");
+
+
+        List<Trend> trends = trendRepository.findAll();
+
+        for(Trend trend : trends) {
+            int postCount = postRepository.countByTrendAndCreatedAtBetweenAndDeletedFalse(
+                    trend,
+                    startOfLastMonth.atStartOfDay(),
+                    endOfLastMonth.atTime(23, 59, 59)
+            );
+
+            if(postCount >= 50) {
+                String formattedPeriod = startOfLastMonth.format(formatter);  // "2025년 8월"
+                trend.setPeakPeriod(formattedPeriod);
+            }
+        }
     }
 
 }
