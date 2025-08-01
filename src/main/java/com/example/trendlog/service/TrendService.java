@@ -46,6 +46,7 @@ public class TrendService {
     private final TrendCommentRepository trendCommentRepository;
     private final TrendCommentLikeReposity trendCommentLikeReposity;
     private final PostRepository postRepository;
+    private final TrendViewLogService trendViewLogService;
 
     /**
      * 트렌드 생성
@@ -101,6 +102,8 @@ public class TrendService {
         if (user != null) {
             isLiked = trendLikeRepository.existsByTrendAndUser(trend, user);
             isScrapped = trendScrapRepository.existsByTrendAndUser(trend, user);
+            trendViewLogService.logTrendView(user, id);
+
         }
 
         return TrendDetailResponse.from(trend,comments,isLiked,isScrapped);
