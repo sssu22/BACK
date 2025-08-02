@@ -3,6 +3,7 @@ package com.example.trendlog.demo;
 import com.example.trendlog.dto.response.trend.TrendCsvDto;
 import com.example.trendlog.dto.response.trend.TrendRecommendScoreDto;
 import com.example.trendlog.service.TrendExportService;
+import com.example.trendlog.service.TrendRecommendCsvImportService;
 import com.example.trendlog.service.TrendRecommendScoreExportService;
 import com.example.trendlog.service.TrendService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -27,6 +28,7 @@ public class SchedulerDebugController {
     private final TrendService trendService;
     private final TrendRecommendScoreExportService trendRecommendScoreExportService;
     private final TrendExportService trendExportService;
+    private final TrendRecommendCsvImportService trendRecommendCsvImportService;
 
     @PostMapping("/popular")
     public ResponseEntity<Void> runPopularTrendJob() {
@@ -56,5 +58,13 @@ public class SchedulerDebugController {
     public ResponseEntity<String> peakTrend() {
         trendService.updatePeakPeriods();
         return ResponseEntity.ok("피크타임 갱신 완료");
+    }
+
+    @GetMapping("/save-recommend")
+    public ResponseEntity<String> importDailyRecommendation() {
+        String path = "ai-recommendation/recommended_trends.csv";
+        trendRecommendCsvImportService.importFromCsv(path);
+        return ResponseEntity.ok("추천 결과 CSV → DB 저장 완료");
+
     }
 }

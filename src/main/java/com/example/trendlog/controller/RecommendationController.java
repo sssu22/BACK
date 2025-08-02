@@ -27,10 +27,10 @@ public class RecommendationController implements RecommendationSwaggerSpec{
         List<RecommendedTrendResponse> responses = recommendationService.getRecommendations(user);
         return ResponseEntity.ok(DataResponse.from(responses));
     }
-
-    @PostMapping
-    public ResponseEntity<DataResponse<Void>> createRecommendation(@RequestBody RecommendSaveRequest request){
-        recommendationService.saveRecommendations(request.getUserId(),request.getTrendIds());
-        return ResponseEntity.ok(DataResponse.ok());
-    }
+//API 스타일로 할 경우를 생각해서 남겨놓음
+//    @PostMapping
+//    public ResponseEntity<DataResponse<Void>> createRecommendation(@RequestBody RecommendSaveRequest request){
+//        recommendationService.saveRecommendations(request.getUserId(),request.getTrendIds());
+//        return ResponseEntity.ok(DataResponse.ok());
+//    }
 }

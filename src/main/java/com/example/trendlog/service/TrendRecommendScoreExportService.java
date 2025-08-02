@@ -1,6 +1,9 @@
 package com.example.trendlog.service;
 
 import com.example.trendlog.dto.response.trend.TrendRecommendScoreDto;
+import com.example.trendlog.global.exception.AppException;
+import com.example.trendlog.global.exception.code.CsvErrorCode;
+import com.example.trendlog.global.exception.code.MailErrorCode;
 import com.example.trendlog.repository.post.PostLikeRepository;
 import com.example.trendlog.repository.post.PostRepository;
 import com.example.trendlog.repository.trend.*;
@@ -65,7 +68,7 @@ public class TrendRecommendScoreExportService {
 
     // csv에 저장
     public void exportScoresToCsv(List<TrendRecommendScoreDto> scores) {
-        File file = new File("trend_recommend_scores.csv");
+        File file = new File("ai-recommendation/trend_recommend_scores.csv");
         try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
             writer.println("user_id,trend_id,score"); // 헤더
             for (TrendRecommendScoreDto dto : scores) {
@@ -73,7 +76,7 @@ public class TrendRecommendScoreExportService {
             }
             log.info("CSV 파일 저장 완료: {}", file.getAbsolutePath());
         }catch (Exception e){
-            log.error("CSV 저장 중 오류 발생", e);
+            throw new AppException(CsvErrorCode.SCORE_EXPORT_FAIL);
         }
     }
 }

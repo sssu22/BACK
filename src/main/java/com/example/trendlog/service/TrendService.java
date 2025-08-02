@@ -367,26 +367,29 @@ public class TrendService {
      */
     @Transactional
     public void updatePeakPeriods() {
-        LocalDate now=LocalDate.now();
-        LocalDate startOfLastMonth = now.minusMonths(1).withDayOfMonth(1);
-        LocalDate endOfLastMonth = now.withDayOfMonth(2).minusDays(1);
+        try {
+            LocalDate now = LocalDate.now();
+            LocalDate startOfLastMonth = now.minusMonths(1).withDayOfMonth(1);
+            LocalDate endOfLastMonth = now.withDayOfMonth(2).minusDays(1);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 M월");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 M월");
 
+            List<Trend> trends = trendRepository.findAll();
 
-        List<Trend> trends = trendRepository.findAll();
+            for (Trend trend : trends) {
+                int postCount = postRepository.countByTrendAndCreatedAtBetweenAndDeletedFalse(
+                        trend,
+                        startOfLastMonth.atStartOfDay(),
+                        endOfLastMonth.atTime(23, 59, 59)
+                );
 
-        for(Trend trend : trends) {
-            int postCount = postRepository.countByTrendAndCreatedAtBetweenAndDeletedFalse(
-                    trend,
-                    startOfLastMonth.atStartOfDay(),
-                    endOfLastMonth.atTime(23, 59, 59)
-            );
-
-            if(postCount >= 50) {
-                String formattedPeriod = startOfLastMonth.format(formatter);  // "2025년 8월"
-                trend.setPeakPeriod(formattedPeriod);
+                if (postCount >= 50) {
+                    String formattedPeriod = startOfLastMonth.format(formatter);  // "2025년 8월"
+                    trend.setPeakPeriod(formattedPeriod);
+                }
             }
+        } catch (Exception e) {
+            throw new AppException(TrendErrorCode.PEAK_PERIOD_UPDATE_FAIL);
         }
     }
 

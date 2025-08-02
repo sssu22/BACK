@@ -17,7 +17,8 @@ public enum TrendErrorCode implements ErrorCode {
     LIKE_TREND_NOT_FOUND(HttpStatus.NOT_FOUND, "좋아요 대상 트렌드가 존재하지 않습니다.", "TREND-008"),
     SCRAP_TREND_NOT_FOUND(HttpStatus.NOT_FOUND, "스크랩 대상 트렌드가 존재하지 않습니다.", "TREND-009"),
     INVALID_CATEGORY(HttpStatus.BAD_REQUEST, "유효하지 않은 트렌드 카테고리입니다.", "TREND-010"),
-    INVALID_PAGE_REQUEST(HttpStatus.BAD_REQUEST, "유효하지 않은 페이지 요청입니다.", "TREND-011");
+    INVALID_PAGE_REQUEST(HttpStatus.BAD_REQUEST, "유효하지 않은 페이지 요청입니다.", "TREND-011"),
+    PEAK_PERIOD_UPDATE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "피크 시기 갱신에 실패했습니다.", "TREND-012");
 
     private final HttpStatus httpStatus;
     private final String message;

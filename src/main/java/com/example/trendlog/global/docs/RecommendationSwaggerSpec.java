@@ -32,12 +32,12 @@ public interface RecommendationSwaggerSpec {
     public ResponseEntity<DataResponse<List<RecommendedTrendResponse>>> getRecommendations(
             @AuthenticationPrincipal UserDetailsImpl userDetails);
 
-    @Operation(summary = "트렌드 추천 저장(백엔드 파이썬 내부 호출용)", description = "userId와 trendId를 사용하여 사용자별 추천 트렌드를 저장합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 회원 (USER-001)/ 존재하지 않은 트렌드(TREND-002)",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @PostMapping
-    public ResponseEntity<DataResponse<Void>> createRecommendation(@RequestBody RecommendSaveRequest request);
+//    @Operation(summary = "트렌드 추천 저장(백엔드 파이썬 내부 호출용)", description = "userId와 trendId를 사용하여 사용자별 추천 트렌드를 저장합니다.")
+//    @ApiResponses({
+//            @ApiResponse(responseCode = "404", description = "존재하지 않는 회원 (USER-001)/ 존재하지 않은 트렌드(TREND-002)",
+//                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+//    })
+//    @PostMapping
+//    public ResponseEntity<DataResponse<Void>> createRecommendation(@RequestBody RecommendSaveRequest request);
 
 }

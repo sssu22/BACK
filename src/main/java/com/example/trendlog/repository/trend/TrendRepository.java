@@ -27,6 +27,6 @@ public interface TrendRepository extends JpaRepository<Trend, Long>, TrendReposi
 
     Page<Trend> findByCategory(TrendCategory category, Pageable pageable);
 
-    @Query("SELECT new com.example.trendlog.dto.response.trend.TrendCsvDto(t.id, t.title, t.category) FROM Trend t")
-    List<TrendCsvDto> findAllTrendsForCsv();
+    @Query("SELECT new com.example.trendlog.dto.response.trend.TrendCsvDto(t.id, t.title, t.category, t.description) FROM Trend t")
+    List<TrendCsvDto>  findAllTrendsForCsv();
 }
