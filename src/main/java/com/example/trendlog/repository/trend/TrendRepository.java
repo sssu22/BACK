@@ -3,6 +3,7 @@ package com.example.trendlog.repository.trend;
 import com.example.trendlog.domain.User;
 import com.example.trendlog.domain.trend.Trend;
 import com.example.trendlog.domain.trend.TrendCategory;
+import com.example.trendlog.dto.response.trend.TrendCsvDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,5 +27,6 @@ public interface TrendRepository extends JpaRepository<Trend, Long>, TrendReposi
 
     Page<Trend> findByCategory(TrendCategory category, Pageable pageable);
 
-
+    @Query("SELECT new com.example.trendlog.dto.response.trend.TrendCsvDto(t.id, t.title, t.category, t.description) FROM Trend t")
+    List<TrendCsvDto>  findAllTrendsForCsv();
 }

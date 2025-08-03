@@ -56,6 +56,9 @@ public class SecurityConfig {
                                 "api/v1/search/trends").permitAll()
                         .requestMatchers(
                                 "/debug/scheduler/**").permitAll()
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/v1/recommend").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )

@@ -2,6 +2,7 @@ package com.example.trendlog.dto.response.trend;
 
 import com.example.trendlog.domain.trend.Trend;
 import com.example.trendlog.domain.trend.TrendCategory;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -22,6 +23,7 @@ public class TrendDetailResponse {
     private final Integer likeCount;
     private final Integer commentCount;
     private final Integer snsMentions;
+    @Schema(example = "2025년 7월")
     private final String peakPeriod;
     private final List<String> tags;
     private final List<SimilarTrendDto> similarTrends;

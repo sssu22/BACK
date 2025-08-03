@@ -5,6 +5,7 @@ import com.example.trendlog.domain.trend.Trend;
 import com.example.trendlog.domain.trend.TrendScrap;
 import com.example.trendlog.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,8 +13,14 @@ import java.util.UUID;
 
 public interface TrendScrapRepository extends JpaRepository<TrendScrap, Long> {
     boolean existsByTrendAndUser(Trend trend, User user);
+
     Optional<TrendScrap> findByUserAndTrend(User user, Trend trend);
+
     int countByUser(User user);
+
     List<TrendScrap> findByUserOrderByCreatedAtDesc(User user);
+
+    @Query("SELECT s.user.id, s.trend.id, 4 FROM TrendScrap s GROUP BY s.user.id, s.trend.id")
+    List<Object[]> fetchTrendScrapScores();
 
 }
