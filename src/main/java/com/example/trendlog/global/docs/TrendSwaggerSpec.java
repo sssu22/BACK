@@ -57,7 +57,7 @@ public interface TrendSwaggerSpec {
             @RequestParam(defaultValue = "10") int size
     );
 
-    @Operation(summary = "트렌드 상세 조회", description = "트렌드의 내용을 상세 조회합니다.")
+    @Operation(summary = "트렌드 상세 조회", description = "트렌드의 내용을 상세 조회합니다. <br>snsMentions는 지난 한달간 유튜브 영상 개수. 최대 50개기 때문에, 50개면 화면에 '50+'로 표시해야함. <br>youtubeTopView는 유튜브 top10 조회수 합.<br>snsMentions와 peakPeriod는 매달 1일에 갱신.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "트렌드 상세 조회 성공"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 트렌드 (TREND-002)",

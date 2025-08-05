@@ -49,3 +49,5 @@ dump.rdb
 
 # Python virtual environment
 .venv/
+
+.env

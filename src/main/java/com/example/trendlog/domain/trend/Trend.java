@@ -43,7 +43,12 @@ public class Trend {
     private Integer commentCount = 0;
 
     @Builder.Default
-    private Integer snsMentions=0;
+    @Setter
+    private Integer snsMentions=0; //유튜브 언급량(영상 개수)
+
+    @Builder.Default
+    @Setter
+    private Long youtubeTopView=0L; //유튜브 top 영상들의 조회수
 
     @Builder.Default
     @Setter
