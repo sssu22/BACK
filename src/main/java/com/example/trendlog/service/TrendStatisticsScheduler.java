@@ -25,6 +25,8 @@ public class TrendStatisticsScheduler {
     private final TrendExportService trendExportService;
     private final TrendService trendService;
     private final TrendRecommendCsvImportService trendRecommendCsvImportService;
+    private final TrendRepository trendRepository;
+    private final YoutubeApiService youtubeApiService;
 
     @Scheduled(cron = "0 50 2 * * *")
     public void updateRecommendationScores() {
@@ -68,5 +70,24 @@ public class TrendStatisticsScheduler {
         String path = "ai-recommendation/recommended_trends.csv";
         trendRecommendCsvImportService.importFromCsv(path);
         log.info("추천 결과 CSV → DB 저장 완료");
+    }
+
+    @Scheduled(cron = "0 0 0 1 * *") // 매월 1일 00:00
+    @Transactional
+    public void updateTrendsYoutubeMentions(){
+        String[] range=YoutubeApiService.getLastMonthRange();
+        String publishedAfter=range[0];
+        String publishedBefore=range[1];
+
+        List<Trend>trends=trendRepository.findAll();
+        for(Trend trend:trends){
+            List<String> videosIds=youtubeApiService.getYoutubeVideoIds(trend.getTitle(), publishedAfter, publishedBefore);
+            int mentionCount=videosIds.size();
+            Long topViews= youtubeApiService.getTotalViewsOfTopNVideos(videosIds,10);
+
+            trend.setSnsMentions(mentionCount); // 영상 개수
+            trend.setYoutubeTopView(topViews); // 누적 조회수
+        }
+        trendRepository.saveAll(trends);
     }
 }

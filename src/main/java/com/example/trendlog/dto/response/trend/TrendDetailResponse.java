@@ -23,6 +23,7 @@ public class TrendDetailResponse {
     private final Integer likeCount;
     private final Integer commentCount;
     private final Integer snsMentions;
+    private final Long youtubeTopView;
     @Schema(example = "2025년 7월")
     private final String peakPeriod;
     private final List<String> tags;
@@ -44,6 +45,7 @@ public class TrendDetailResponse {
                 .likeCount(trend.getLikeCount())
                 .commentCount(trend.getCommentCount())
                 .snsMentions(trend.getSnsMentions() != null ? trend.getSnsMentions() : 0)
+                .youtubeTopView(trend.getYoutubeTopView())
                 .peakPeriod(trend.getPeakPeriod() != null ? trend.getPeakPeriod() : "미정")
                 .tags(trend.getTags()!=null?trend.getTags() : List.of())
                 .similarTrends(
