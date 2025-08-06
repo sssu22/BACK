@@ -53,7 +53,7 @@ if __name__ == "__main__":
     # 테스트용 입력 (DB에 해당 카테고리의 트렌드가 있는지 확인!)
     title = "카페 레이어드"
     description = "체인점이긴 하지만 케이크가 정말 맛있는 카페 맛집"
-    category = "FOOD"    # category에 맞게 실제 DB 값 입력
+    category = "FOOD" 
 
     result = find_similar_trends(title, description, category)
     print("비슷한 트렌드 결과:")

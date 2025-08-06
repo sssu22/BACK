@@ -22,16 +22,13 @@ def merge_compounds(nouns):
 
 
 def extract_keywords(text, top_n=3):
-    # 1. 명사 추출 (합성명사 포함)
     komoran = Komoran()
     nouns = komoran.nouns(text)
-    # 2. 2글자 이상, 불용어 제거
     nouns = [n for n in nouns if len(n) > 1 and n not in STOPWORDS]
 
     nouns = merge_compounds(nouns)
     if not nouns:
         return []
-    # 3. TF-IDF 적용
     docs = [' '.join(nouns)]
     vectorizer = TfidfVectorizer()
     tfidf = vectorizer.fit_transform(docs)
