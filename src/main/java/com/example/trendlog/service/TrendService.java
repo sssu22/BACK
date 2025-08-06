@@ -49,6 +49,8 @@ public class TrendService {
     private final TrendCommentLikeReposity trendCommentLikeReposity;
     private final PostRepository postRepository;
     private final TrendViewLogService trendViewLogService;
+    private final TagGenerationService tagGenerationService;
+    private final YoutubeApiService youtubeApiService;
 
     /**
      * 트렌드 생성
@@ -69,11 +71,22 @@ public class TrendService {
             throw new DuplicateTrendException(); // TREND-001
         }
 
+        List<String> tags = tagGenerationService.generateTags(request.getTitle(), request.getDescription());
+
+        // 유튜브 언급량 초기화
+        String[] range = YoutubeApiService.getLastMonthRange();
+        List<String> videoIds = youtubeApiService.getYoutubeVideoIds(request.getTitle(), range[0], range[1]);
+        int mentionCount = videoIds.size();
+        long topViews = youtubeApiService.getTotalViewsOfTopNVideos(videoIds, 10);
+
         Trend trend = Trend.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .category(TrendCategory.valueOf(request.getCategory()))  // 문자열 → enum 변환
                 .score(ThreadLocalRandom.current().nextInt(60, 101))     // 랜덤 점수
+                .snsMentions(mentionCount)    // 영상 개수
+                .youtubeTopView(topViews)     // 누적 조회수
+                .tags(tags)
                 .build();
 
         Trend savedTrend = trendRepository.save(trend);

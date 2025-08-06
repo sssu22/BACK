@@ -17,7 +17,7 @@ public class TrendDetailResponse {
     private final Long id;
     private final String title;
     private final String description;
-    private final TrendCategory category;
+    private final String category;
     private final Integer score;
     private final Integer viewCount;
     private final Integer likeCount;
@@ -39,7 +39,7 @@ public class TrendDetailResponse {
                 .id(trend.getId())
                 .title(trend.getTitle())
                 .description(trend.getDescription())
-                .category(trend.getCategory())
+                .category(trend.getCategory().getDescription())
                 .score(trend.getScore())
                 .viewCount(trend.getViewCount())
                 .likeCount(trend.getLikeCount())

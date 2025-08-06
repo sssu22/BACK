@@ -1,0 +1,29 @@
+services:
+  fastapi:
+    build:
+      context: ./ai-recommendation
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - POSTGRES_HOST=db     # FastAPI에서 DB 접근 필요할 때
+      - REDIS_HOST=redis     # FastAPI에서 Redis 접근 필요할 때
+    restart: always
+
+  db:
+    image: postgres:16
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    restart: always
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    restart: always
