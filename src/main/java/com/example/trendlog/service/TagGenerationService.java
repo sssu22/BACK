@@ -2,12 +2,14 @@ package com.example.trendlog.service;
 
 import com.example.trendlog.dto.request.trend.TrendTagRequest;
 import com.example.trendlog.dto.response.trend.TrendTagResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TagGenerationService {
     private final WebClient webClient=WebClient.create("http://localhost:8000");
 

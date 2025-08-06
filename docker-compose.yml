@@ -7,9 +7,8 @@ services:
     depends_on:
       - db
       - redis
-    environment:
-      - POSTGRES_HOST=db     # FastAPI에서 DB 접근 필요할 때
-      - REDIS_HOST=redis     # FastAPI에서 Redis 접근 필요할 때
+    env_file:
+      - .env #.env가 루트에 있을때 기준
     restart: always
 
   db:

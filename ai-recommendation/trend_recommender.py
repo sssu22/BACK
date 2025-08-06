@@ -46,12 +46,7 @@ def find_similar_trends(title, description, category, top_k=3):
     
     result = []
     for idx in top_indices:
-        result.append({
-            "id": int(trends_df.iloc[idx]["id"]),
-            "title": trends_df.iloc[idx]["title"],
-            "description": trends_df.iloc[idx]["description"],
-            "similarity": float(similarities[idx])
-        })
+        result.append(int(trends_df.iloc[idx]["id"]))
     return result
 
 if __name__ == "__main__":

@@ -44,8 +44,8 @@ public class TrendDetailResponse {
                 .viewCount(trend.getViewCount())
                 .likeCount(trend.getLikeCount())
                 .commentCount(trend.getCommentCount())
-                .snsMentions(trend.getSnsMentions() != null ? trend.getSnsMentions() : 0)
-                .youtubeTopView(trend.getYoutubeTopView())
+                .snsMentions(trend.getSnsMentions()) // null 허용
+                .youtubeTopView(trend.getYoutubeTopView()) // null 허용
                 .peakPeriod(trend.getPeakPeriod() != null ? trend.getPeakPeriod() : "미정")
                 .tags(trend.getTags()!=null?trend.getTags() : List.of())
                 .similarTrends(

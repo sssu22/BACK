@@ -51,6 +51,7 @@ public class TrendService {
     private final TrendViewLogService trendViewLogService;
     private final TagGenerationService tagGenerationService;
     private final YoutubeApiService youtubeApiService;
+    private final SimilarTrendService similarTrendService;
 
     /**
      * 트렌드 생성
@@ -72,24 +73,30 @@ public class TrendService {
         }
 
         List<String> tags = tagGenerationService.generateTags(request.getTitle(), request.getDescription());
+//        List<Trend> similarTrendIds=similarTrendService.getSimilarTrends(request.getTitle(), request.getDescription(), request.getCategory());
 
-        // 유튜브 언급량 초기화
-        String[] range = YoutubeApiService.getLastMonthRange();
-        List<String> videoIds = youtubeApiService.getYoutubeVideoIds(request.getTitle(), range[0], range[1]);
-        int mentionCount = videoIds.size();
-        long topViews = youtubeApiService.getTotalViewsOfTopNVideos(videoIds, 10);
 
         Trend trend = Trend.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .category(TrendCategory.valueOf(request.getCategory()))  // 문자열 → enum 변환
                 .score(ThreadLocalRandom.current().nextInt(60, 101))     // 랜덤 점수
-                .snsMentions(mentionCount)    // 영상 개수
-                .youtubeTopView(topViews)     // 누적 조회수
                 .tags(tags)
+                .snsMentions(null)      // ★ 초기값 null (Integer)
+                .youtubeTopView(null)   // ★ 초기값 null (Long)
                 .build();
 
         Trend savedTrend = trendRepository.save(trend);
+
+        List<Trend> similarTrends = similarTrendService.getSimilarTrends(
+                savedTrend,
+                savedTrend.getTitle(),
+                savedTrend.getDescription(),
+                savedTrend.getCategory().name()
+        );
+        savedTrend.setSimilarTrends(new ArrayList<>(similarTrends));
+        trendRepository.save(savedTrend);
+
         return new TrendCreateResponse(
                 savedTrend.getId(),
                 savedTrend.getTitle(),
