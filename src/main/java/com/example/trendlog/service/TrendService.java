@@ -49,6 +49,7 @@ public class TrendService {
     private final TrendCommentLikeReposity trendCommentLikeReposity;
     private final PostRepository postRepository;
     private final TrendViewLogService trendViewLogService;
+    private final NewsRecommendationService newsRecommendationService;
 
     /**
      * 트렌드 생성
@@ -77,6 +78,18 @@ public class TrendService {
                 .build();
 
         Trend savedTrend = trendRepository.save(trend);
+
+        // 추천 뉴스 생성 및 AI 뉴스 스코어
+        List<RecommendedNews> newsList = newsRecommendationService.generateNewsForKeyword(request.getTitle());
+
+        // 연관관계 설정 + 트렌드에 점수 추가
+        if (!newsList.isEmpty()) {
+            for (RecommendedNews news : newsList) {
+                trend.addRecommendedNews(news);
+            }
+            trend.setNewsScore(newsList.get(0).getScore());
+        }
+
         return new TrendCreateResponse(
                 savedTrend.getId(),
                 savedTrend.getTitle(),

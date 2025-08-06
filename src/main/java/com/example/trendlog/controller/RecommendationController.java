@@ -1,11 +1,13 @@
 package com.example.trendlog.controller;
 
 import com.example.trendlog.domain.User;
+import com.example.trendlog.domain.trend.RecommendedNews;
 import com.example.trendlog.dto.request.trend.RecommendSaveRequest;
 import com.example.trendlog.dto.response.trend.RecommendedTrendResponse;
 import com.example.trendlog.global.docs.RecommendationSwaggerSpec;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.global.security.userdetails.UserDetailsImpl;
+import com.example.trendlog.service.NewsRecommendationService;
 import com.example.trendlog.service.RecommendationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RecommendationController implements RecommendationSwaggerSpec{
     private final RecommendationService recommendationService;
+    private final NewsRecommendationService newsRecommendationService;
 
     @GetMapping
     public ResponseEntity<DataResponse<List<RecommendedTrendResponse>>> getRecommendations(
@@ -32,5 +35,11 @@ public class RecommendationController implements RecommendationSwaggerSpec{
 //    public ResponseEntity<DataResponse<Void>> createRecommendation(@RequestBody RecommendSaveRequest request){
 //        recommendationService.saveRecommendations(request.getUserId(),request.getTrendIds());
 //        return ResponseEntity.ok(DataResponse.ok());
+//    }
+
+    // 뉴스 추천 테스트용
+//    @GetMapping("/news")
+//    public ResponseEntity<DataResponse<List<RecommendedNews>>> getNews(@RequestParam String keyword) {
+//        return ResponseEntity.ok(DataResponse.from(newsRecommendationService.generateNewsForKeyword(keyword)));
 //    }
 }

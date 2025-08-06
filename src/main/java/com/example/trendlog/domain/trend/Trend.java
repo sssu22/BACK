@@ -74,6 +74,19 @@ public class Trend {
     )
     private List<Trend> similarTrends = new ArrayList<>();
 
+    @OneToMany(mappedBy = "trend", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<RecommendedNews> recommendedNewsList = new ArrayList<>();
+
+    @Builder.Default
+    @Setter
+    private Integer newsScore = 80;
+
+    public void addRecommendedNews(RecommendedNews news) {
+        recommendedNewsList.add(news);
+        news.setTrend(this);
+    }
+
 
     @PrePersist
     protected void onCreate() {
