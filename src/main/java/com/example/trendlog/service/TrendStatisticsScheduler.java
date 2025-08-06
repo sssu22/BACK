@@ -5,6 +5,7 @@ import com.example.trendlog.dto.response.trend.TrendRecommendScoreDto;
 import com.example.trendlog.global.exception.AppException;
 import com.example.trendlog.global.exception.code.MailErrorCode;
 import com.example.trendlog.global.exception.code.PythonErrorCode;
+import com.example.trendlog.global.exception.code.TrendErrorCode;
 import com.example.trendlog.repository.post.PostRepository;
 import com.example.trendlog.repository.trend.TrendRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.example.trendlog.global.exception.code.TrendErrorCode.TREND_SCORE_UPDATE_FAIL;
 
 @Slf4j
 @Component
@@ -27,6 +32,7 @@ public class TrendStatisticsScheduler {
     private final TrendRecommendCsvImportService trendRecommendCsvImportService;
     private final TrendRepository trendRepository;
     private final YoutubeApiService youtubeApiService;
+    private final PostRepository postRepository;
 
     @Scheduled(cron = "0 50 2 * * *")
     public void updateRecommendationScores() {
@@ -90,4 +96,41 @@ public class TrendStatisticsScheduler {
         }
         trendRepository.saveAll(trends);
     }
+
+//    @Scheduled(cron = "0 0 2 * * MON") // 매주 월요일 새벽 2시
+    @Scheduled(cron = "0 */5 * * * *")
+    @Transactional
+    public void updateTrendTotalScores() {
+        int maxSearchVolume = trendRepository.findMaxSearchVolume();
+        List<Trend> trends = trendRepository.findAll();
+
+        int maxActivityScore = 0;
+        Map<Long, Integer> postCountMap = new HashMap<>();
+
+        // 먼저 모든 trend의 게시글 수를 미리 가져오기
+        for (Trend trend : trends) {
+            int postCount = postRepository.countByTrendId(trend.getId());
+            postCountMap.put(trend.getId(), postCount);
+
+            int activityScore = trend.getLikeCount() + trend.getScrapCount() + postCount;
+            maxActivityScore = Math.max(maxActivityScore, activityScore);
+        }
+
+        for (Trend trend : trends) {
+            try {
+                int postCount = postCountMap.getOrDefault(trend.getId(), 0);
+                int activity = trend.getLikeCount() + trend.getScrapCount() + postCount;
+
+                double normalizedActivity = (maxActivityScore == 0) ? 0 : (double) activity / maxActivityScore * 100;
+                double normalizedSearch = (maxSearchVolume == 0) ? 0 : (double) trend.getSearchVolume() / maxSearchVolume * 100;
+
+                double trendScore = (trend.getNewsScore() + normalizedActivity + normalizedSearch) / 3.0;
+                trend.updateScore((int) trendScore);
+            } catch (Exception e) {
+                throw new AppException(TREND_SCORE_UPDATE_FAIL);
+            }
+        }
+        log.info("모든 트렌드의 총 점수 업데이트 완료");
+    }
+
 }

@@ -28,7 +28,8 @@ public class Trend {
     @Enumerated(EnumType.STRING)
     private TrendCategory category;
 
-    private Integer score;
+    @Builder.Default
+    private Integer score = 50;
 
     @Builder.Default
     private  Integer viewCount=0;
@@ -74,6 +75,10 @@ public class Trend {
     )
     private List<Trend> similarTrends = new ArrayList<>();
 
+    // 검색량
+    @Builder.Default
+    private int searchVolume = 0;
+
     /*
     뉴스 추천 및 뉴스 점수
      */
@@ -83,7 +88,7 @@ public class Trend {
 
     @Builder.Default
     @Setter
-    private Integer newsScore = 60;
+    private Integer newsScore = 50;
 
     public void addRecommendedNews(RecommendedNews news) {
         recommendedNewsList.add(news);
@@ -129,4 +134,13 @@ public class Trend {
     public void decreaseCommentCount() {
         this.commentCount = Math.max(0, this.commentCount - 1);
     }
+
+    public void increaseSearchVolume() {
+        this.searchVolume++;
+    }
+
+    public void updateScore(int score) {
+        this.score = score;
+    }
+
 }

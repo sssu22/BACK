@@ -406,4 +406,13 @@ public class TrendService {
         }
     }
 
+    /**
+     * 검색량
+     */
+    @Transactional
+    public void increaseSearchVolume(String keyword) {
+        trendRepository.findByTitle(keyword)
+                .ifPresent(Trend::increaseSearchVolume);
+    }
+
 }
