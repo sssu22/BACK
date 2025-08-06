@@ -97,8 +97,7 @@ public class TrendStatisticsScheduler {
         trendRepository.saveAll(trends);
     }
 
-//    @Scheduled(cron = "0 0 2 * * MON") // 매주 월요일 새벽 2시
-    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "0 0 2 * * MON") // 매주 월요일 새벽 2시
     @Transactional
     public void updateTrendTotalScores() {
         int maxSearchVolume = trendRepository.findMaxSearchVolume();
