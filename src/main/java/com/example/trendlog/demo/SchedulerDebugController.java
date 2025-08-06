@@ -1,12 +1,12 @@
 package com.example.trendlog.demo;
 
-import com.example.trendlog.dto.response.trend.TrendCsvDto;
 import com.example.trendlog.dto.response.trend.TrendRecommendScoreDto;
+import com.example.trendlog.global.exception.AppException;
+import com.example.trendlog.global.exception.code.PythonErrorCode;
 import com.example.trendlog.service.TrendExportService;
 import com.example.trendlog.service.TrendRecommendCsvImportService;
 import com.example.trendlog.service.TrendRecommendScoreExportService;
 import com.example.trendlog.service.TrendService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -66,5 +66,17 @@ public class SchedulerDebugController {
         trendRecommendCsvImportService.importFromCsv(path);
         return ResponseEntity.ok("추천 결과 CSV → DB 저장 완료");
 
+    }
+
+    @GetMapping("/run-python")
+    public ResponseEntity<String> runPython() {
+        try {
+            ProcessBuilder pb = new ProcessBuilder("python3", "ai-recommendation/recommend.py");
+            pb.inheritIO(); // 로그 출력 확인용
+            Process process = pb.start();
+            return ResponseEntity.ok("파이썬 실행 완료->추천 CSV 생성");
+        } catch (Exception e) {
+            throw new AppException(PythonErrorCode.PYTHON_EXEC_FAIL);
+        }
     }
 }
