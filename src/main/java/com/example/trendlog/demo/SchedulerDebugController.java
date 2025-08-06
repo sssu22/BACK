@@ -3,10 +3,7 @@ package com.example.trendlog.demo;
 import com.example.trendlog.dto.response.trend.TrendRecommendScoreDto;
 import com.example.trendlog.global.exception.AppException;
 import com.example.trendlog.global.exception.code.PythonErrorCode;
-import com.example.trendlog.service.TrendExportService;
-import com.example.trendlog.service.TrendRecommendCsvImportService;
-import com.example.trendlog.service.TrendRecommendScoreExportService;
-import com.example.trendlog.service.TrendService;
+import com.example.trendlog.service.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +26,8 @@ public class SchedulerDebugController {
     private final TrendRecommendScoreExportService trendRecommendScoreExportService;
     private final TrendExportService trendExportService;
     private final TrendRecommendCsvImportService trendRecommendCsvImportService;
+    private final TrendScoreCsvExporter trendScoreCsvExporter;
+    private final TrendStatisticsScheduler trendStatisticsScheduler;
 
     @PostMapping("/popular")
     public ResponseEntity<Void> runPopularTrendJob() {
@@ -78,5 +77,14 @@ public class SchedulerDebugController {
         } catch (Exception e) {
             throw new AppException(PythonErrorCode.PYTHON_EXEC_FAIL);
         }
+    }
+
+    // 시계열 예측
+    @PostMapping("/predict")
+    public ResponseEntity<String> runTrendPredictionManually() {
+        trendScoreCsvExporter.exportAllTrendScoresToCsv(); // CSV 생성
+        trendStatisticsScheduler.runProphetScript();         // Python 실행
+        trendStatisticsScheduler.importPredictionCsv();      // 결과 저장
+        return ResponseEntity.ok("트렌드 예측 수동 실행 완료");
     }
 }

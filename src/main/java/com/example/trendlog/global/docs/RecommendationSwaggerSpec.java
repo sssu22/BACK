@@ -3,6 +3,7 @@ package com.example.trendlog.global.docs;
 import com.example.trendlog.domain.trend.RecommendedNews;
 import com.example.trendlog.dto.request.trend.RecommendSaveRequest;
 import com.example.trendlog.dto.response.trend.RecommendedTrendResponse;
+import com.example.trendlog.dto.response.trend.TrendPredictionResponse;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.global.dto.ErrorResponse;
 import com.example.trendlog.global.security.userdetails.UserDetailsImpl;
@@ -51,4 +52,14 @@ public interface RecommendationSwaggerSpec {
 //                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 //    })
 //    public ResponseEntity<DataResponse<List<RecommendedNews>>> getNews(@RequestParam String keyword);
+
+
+    @Operation(summary = "트렌드 예측 결과 상위 3개 조회", description = "시계열 기반 Prophet 예측으로 계산된 증가율 순 Top3")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 트렌드 (TREND-002)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping("/predictions")
+    public ResponseEntity<DataResponse<List<TrendPredictionResponse>>> getTopPredictions();
 }

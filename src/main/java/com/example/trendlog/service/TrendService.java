@@ -50,6 +50,8 @@ public class TrendService {
     private final PostRepository postRepository;
     private final TrendViewLogService trendViewLogService;
     private final NewsRecommendationService newsRecommendationService;
+    private final TrendScoreRepository trendScoreRepository;
+
 
     /**
      * 트렌드 생성
@@ -413,6 +415,26 @@ public class TrendService {
     public void increaseSearchVolume(String keyword) {
         trendRepository.findByTitle(keyword)
                 .ifPresent(Trend::increaseSearchVolume);
+    }
+
+    /**
+     * 트렌드 점수 업데이트
+     */
+    public void updateTrendScore(Trend trend, int newScore) {
+        if (!Objects.equals(trend.getScore(), newScore)) {
+            // 트렌드 점수 업데이트
+            trend.updateScore(newScore);
+
+            // 시계열 분석을 위한 trendScore 중복 저장 방지
+            if (!trendScoreRepository.existsByTrendIdAndDate(trend.getId(), LocalDate.now())) {
+                TrendScore trendScore = TrendScore.builder()
+                        .trend(trend)
+                        .date(LocalDate.now())
+                        .score(newScore)
+                        .build();
+                trendScoreRepository.save(trendScore);
+            }
+        }
     }
 
 }

@@ -19,7 +19,11 @@ public enum TrendErrorCode implements ErrorCode {
     INVALID_CATEGORY(HttpStatus.BAD_REQUEST, "유효하지 않은 트렌드 카테고리입니다.", "TREND-010"),
     INVALID_PAGE_REQUEST(HttpStatus.BAD_REQUEST, "유효하지 않은 페이지 요청입니다.", "TREND-011"),
     PEAK_PERIOD_UPDATE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "피크 시기 갱신에 실패했습니다.", "TREND-012"),
-    TREND_SCORE_UPDATE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "트렌드 점수 갱신에 실패했습니다.", "TREND-013");
+    TREND_SCORE_UPDATE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "트렌드 점수 갱신에 실패했습니다.", "TREND-013"),
+    TREND_SCORE_EXPORT_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "trend_score.csv 생성 중 오류가 발생했습니다.", "TREND-014"),
+    CSV_READ_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "CSV 파일을 읽는 데 실패했습니다.", "TREND-015"),
+    ;
+    ;
     private final HttpStatus httpStatus;
     private final String message;
     private final String code;
