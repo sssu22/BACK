@@ -1,10 +1,14 @@
 package com.example.trendlog.service;
 
 import com.example.trendlog.domain.trend.RecommendedNews;
+import com.example.trendlog.domain.trend.Trend;
 import com.example.trendlog.global.exception.AppException;
+import com.example.trendlog.repository.trend.TrendRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,13 +20,14 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.trendlog.global.exception.code.TrendNewsErrorCode.CSV_READ_FAIL;
-import static com.example.trendlog.global.exception.code.TrendNewsErrorCode.PYTHON_EXEC_FAIL;
+import static com.example.trendlog.global.exception.code.TrendNewsErrorCode.*;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class NewsRecommendationService {
+
+    private final TrendRepository trendRepository;
 
     public List<RecommendedNews> generateNewsForKeyword(String keyword) {
         String safeKeyword = keyword.replaceAll("\\s+", "_");
@@ -87,5 +92,35 @@ public class NewsRecommendationService {
         }
 
         return result;
+    }
+
+    @Scheduled(cron = "0 0 0 * * MON") // 매주 월요일 00시
+    @Transactional
+    public void refreshNewsAndScore() {
+        List<Trend> trends = trendRepository.findAll();
+
+        for (Trend trend : trends) {
+            try {
+                // 기존 뉴스 삭제
+                trend.clearRecommendedNews(); // 연관관계 제거
+
+                // 새로운 뉴스 + 점수 가져오기
+                List<RecommendedNews> newNewsList = generateNewsForKeyword(trend.getTitle());
+                if (newNewsList.isEmpty()) continue;
+
+                for (RecommendedNews news : newNewsList) {
+                    trend.addRecommendedNews(news);
+                }
+
+                // 점수 갱신
+                trend.updateNewsScore(newNewsList.get(0).getScore());
+
+            } catch (Exception e) {
+                log.error("트렌드 뉴스 갱신 실패 - 트렌드 ID: {}", trend.getId(), e);
+                throw new AppException(TREND_NEWS_REFRESH_FAIL);
+            }
+        }
+
+        log.info("모든 트렌드 뉴스 및 뉴스 점수 갱신 완료");
     }
 }

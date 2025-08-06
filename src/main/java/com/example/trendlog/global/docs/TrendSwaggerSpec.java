@@ -37,7 +37,9 @@ public interface TrendSwaggerSpec {
             @ApiResponse(responseCode = "409", description = "이미 존재하는 트렌드 (TREND-409)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "400", description = "유효하지 않은 트렌드 카테고리 (TREND-010)",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "뉴스 추천 생성 중 서버 내부 오류 (NEWS)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     public ResponseEntity<DataResponse<TrendCreateResponse>> createTrend(
             @AuthenticationPrincipal UserDetailsImpl userDetails,

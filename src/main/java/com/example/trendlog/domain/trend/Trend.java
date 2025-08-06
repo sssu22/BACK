@@ -74,17 +74,28 @@ public class Trend {
     )
     private List<Trend> similarTrends = new ArrayList<>();
 
+    /*
+    뉴스 추천 및 뉴스 점수
+     */
     @OneToMany(mappedBy = "trend", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<RecommendedNews> recommendedNewsList = new ArrayList<>();
 
     @Builder.Default
     @Setter
-    private Integer newsScore = 80;
+    private Integer newsScore = 60;
 
     public void addRecommendedNews(RecommendedNews news) {
         recommendedNewsList.add(news);
         news.setTrend(this);
+    }
+
+    public void clearRecommendedNews() {
+        this.recommendedNewsList.clear();
+    }
+
+    public void updateNewsScore(Integer score) {
+        this.newsScore = score;
     }
 
 
