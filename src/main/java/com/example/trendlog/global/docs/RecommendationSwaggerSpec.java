@@ -1,7 +1,9 @@
 package com.example.trendlog.global.docs;
 
+import com.example.trendlog.domain.trend.RecommendedNews;
 import com.example.trendlog.dto.request.trend.RecommendSaveRequest;
 import com.example.trendlog.dto.response.trend.RecommendedTrendResponse;
+import com.example.trendlog.dto.response.trend.TrendPredictionResponse;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.global.dto.ErrorResponse;
 import com.example.trendlog.global.security.userdetails.UserDetailsImpl;
@@ -17,6 +19,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -39,5 +42,24 @@ public interface RecommendationSwaggerSpec {
 //    })
 //    @PostMapping
 //    public ResponseEntity<DataResponse<Void>> createRecommendation(@RequestBody RecommendSaveRequest request);
+//
+     // 뉴스 추천 테스트용
+//    @Operation(summary = "트렌드 뉴스 추천 조회", description = "(테스트용) 인증된 사용자 한정, 트렌드 관련 뉴스 3개를 조회합니다.")
+//    @SecurityRequirement(name = "bearerAuth")
+//    @ApiResponses({
+//            @ApiResponse(responseCode = "200", description = "게시글 작성 성공"),
+//            @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자(USER-011)",
+//                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+//    })
+//    public ResponseEntity<DataResponse<List<RecommendedNews>>> getNews(@RequestParam String keyword);
 
+
+    @Operation(summary = "트렌드 예측 결과 상위 3개 조회", description = "시계열 기반 Prophet 예측으로 계산된 증가율 순 Top3")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 트렌드 (TREND-002)",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping("/predictions")
+    public ResponseEntity<DataResponse<List<TrendPredictionResponse>>> getTopPredictions();
 }

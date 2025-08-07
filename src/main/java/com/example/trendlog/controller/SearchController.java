@@ -118,6 +118,7 @@ public class SearchController implements SearchSwaggerSpec {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "latest") String sortBy // trend, latest
     ) {
+        trendService.increaseSearchVolume(keyword);
         TrendSearchCondition condition = new TrendSearchCondition();
         condition.setKeyword(keyword);
         condition.setCategory(category);
