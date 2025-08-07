@@ -4,6 +4,10 @@ import com.example.trendlog.domain.trend.Trend;
 import com.example.trendlog.dto.response.trend.TrendRecommendScoreDto;
 import com.example.trendlog.global.exception.AppException;
 import com.example.trendlog.global.exception.code.PythonErrorCode;
+import com.example.trendlog.service.TrendExportService;
+import com.example.trendlog.service.TrendRecommendCsvImportService;
+import com.example.trendlog.service.TrendRecommendScoreExportService;
+import com.example.trendlog.service.TrendService;
 import com.example.trendlog.repository.trend.TrendRepository;
 import com.example.trendlog.service.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,6 +35,8 @@ public class SchedulerDebugController {
     private final TrendRecommendCsvImportService trendRecommendCsvImportService;
     private final TrendRepository trendRepository;
     private final YoutubeApiService youtubeApiService;
+    private final TrendScoreCsvExporter trendScoreCsvExporter;
+    private final TrendStatisticsScheduler trendStatisticsScheduler;
 
     @PostMapping("/popular")
     public ResponseEntity<Void> runPopularTrendJob() {
@@ -100,5 +106,14 @@ public class SchedulerDebugController {
         trendRepository.saveAll(trends);
         return ResponseEntity.ok("유튜브 언급량 성공");
 
+    }
+
+    // 시계열 예측
+    @PostMapping("/predict")
+    public ResponseEntity<String> runTrendPredictionManually() {
+        trendScoreCsvExporter.exportAllTrendScoresToCsv(); // CSV 생성
+        trendStatisticsScheduler.runProphetScript();         // Python 실행
+        trendStatisticsScheduler.importPredictionCsv();      // 결과 저장
+        return ResponseEntity.ok("트렌드 예측 수동 실행 완료");
     }
 }

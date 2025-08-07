@@ -60,4 +60,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
 
     int countByTrendAndCreatedAtBetweenAndDeletedFalse(Trend trend, LocalDateTime start, LocalDateTime end);
 
+    @Query("SELECT COUNT(p) FROM Post p WHERE p.trend.id = :trendId")
+    int countByTrendId(@Param("trendId") Long trendId);
+
 }

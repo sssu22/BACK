@@ -60,6 +60,7 @@ public class SecurityConfig {
                                 HttpMethod.POST,
                                 "/api/v1/recommend").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api/v1/recommend/predictions").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

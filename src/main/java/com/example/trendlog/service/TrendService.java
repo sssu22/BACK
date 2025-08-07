@@ -52,6 +52,9 @@ public class TrendService {
     private final TagGenerationService tagGenerationService;
     private final YoutubeApiService youtubeApiService;
     private final SimilarTrendService similarTrendService;
+    private final NewsRecommendationService newsRecommendationService;
+    private final TrendScoreRepository trendScoreRepository;
+
 
     /**
      * 트렌드 생성
@@ -73,20 +76,29 @@ public class TrendService {
         }
 
         List<String> tags = tagGenerationService.generateTags(request.getTitle(), request.getDescription());
-//        List<Trend> similarTrendIds=similarTrendService.getSimilarTrends(request.getTitle(), request.getDescription(), request.getCategory());
-
 
         Trend trend = Trend.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .category(TrendCategory.valueOf(request.getCategory()))  // 문자열 → enum 변환
-                .score(ThreadLocalRandom.current().nextInt(60, 101))     // 랜덤 점수
                 .tags(tags)
                 .snsMentions(null)      // ★ 초기값 null (Integer)
                 .youtubeTopView(null)   // ★ 초기값 null (Long)
                 .build();
 
         Trend savedTrend = trendRepository.save(trend);
+
+        // 추천 뉴스 생성 및 AI 뉴스 스코어
+        List<RecommendedNews> newsList = newsRecommendationService.generateNewsForKeyword(request.getTitle());
+
+        // 연관관계 설정 + 트렌드에 점수 추가
+        if (!newsList.isEmpty()) {
+            for (RecommendedNews news : newsList) {
+                trend.addRecommendedNews(news);
+            }
+            trend.setNewsScore(newsList.get(0).getScore());
+        }
+
 
         List<Trend> similarTrends = similarTrendService.getSimilarTrends(
                 savedTrend,
@@ -410,6 +422,35 @@ public class TrendService {
             }
         } catch (Exception e) {
             throw new AppException(TrendErrorCode.PEAK_PERIOD_UPDATE_FAIL);
+        }
+    }
+
+    /**
+     * 검색량
+     */
+    @Transactional
+    public void increaseSearchVolume(String keyword) {
+        trendRepository.findByTitle(keyword)
+                .ifPresent(Trend::increaseSearchVolume);
+    }
+
+    /**
+     * 트렌드 점수 업데이트
+     */
+    public void updateTrendScore(Trend trend, int newScore) {
+        if (!Objects.equals(trend.getScore(), newScore)) {
+            // 트렌드 점수 업데이트
+            trend.updateScore(newScore);
+
+            // 시계열 분석을 위한 trendScore 중복 저장 방지
+            if (!trendScoreRepository.existsByTrendIdAndDate(trend.getId(), LocalDate.now())) {
+                TrendScore trendScore = TrendScore.builder()
+                        .trend(trend)
+                        .date(LocalDate.now())
+                        .score(newScore)
+                        .build();
+                trendScoreRepository.save(trendScore);
+            }
         }
     }
 

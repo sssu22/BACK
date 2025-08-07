@@ -32,6 +32,7 @@ public class TrendDetailResponse {
     private final boolean isLiked;
     private final boolean isScrapped;
     private final List<TrendCommentDto> comments;
+    private final List<NewsResponse> recommendedNews;
 
 
     public static TrendDetailResponse from(Trend trend, List<TrendCommentDto> comments,boolean isLiked, boolean isScrapped) {
@@ -59,6 +60,14 @@ public class TrendDetailResponse {
                 .isScrapped(isScrapped)
                 .comments(comments)
                 .createdAt(trend.getCreatedAt())
+                .recommendedNews(
+                        trend.getRecommendedNewsList() != null
+                                ? trend.getRecommendedNewsList().stream()
+                                .limit(3)
+                                .map(news -> new NewsResponse(news.getTitle(), news.getLink()))
+                                .collect(Collectors.toList())
+                                : List.of()
+                )
                 .build();
 
     }

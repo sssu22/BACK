@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TrendRepository extends JpaRepository<Trend, Long>, TrendRepositoryCustom {
     // 최근 일주일 내에 생성된 트렌드 중 상위 점수순 정렬 (popular)
@@ -29,4 +30,12 @@ public interface TrendRepository extends JpaRepository<Trend, Long>, TrendReposi
 
     @Query("SELECT new com.example.trendlog.dto.response.trend.TrendCsvDto(t.id, t.title, t.category, t.description) FROM Trend t")
     List<TrendCsvDto>  findAllTrendsForCsv();
+
+    Optional<Trend> findByTitle(String title);
+
+    @Query("SELECT MAX(t.likeCount + t.scrapCount) FROM Trend t")
+    int findMaxActivityScore();
+
+    @Query("SELECT MAX(t.searchVolume) FROM Trend t")
+    int findMaxSearchVolume();
 }
