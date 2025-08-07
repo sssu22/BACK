@@ -76,7 +76,6 @@ public class TrendService {
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .category(TrendCategory.valueOf(request.getCategory()))  // 문자열 → enum 변환
-                .score(ThreadLocalRandom.current().nextInt(60, 101))     // 랜덤 점수
                 .build();
 
         Trend savedTrend = trendRepository.save(trend);
