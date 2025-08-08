@@ -49,6 +49,9 @@ public class TrendService {
     private final TrendCommentLikeReposity trendCommentLikeReposity;
     private final PostRepository postRepository;
     private final TrendViewLogService trendViewLogService;
+    private final TagGenerationService tagGenerationService;
+    private final YoutubeApiService youtubeApiService;
+    private final SimilarTrendService similarTrendService;
     private final NewsRecommendationService newsRecommendationService;
     private final TrendScoreRepository trendScoreRepository;
 
@@ -72,10 +75,15 @@ public class TrendService {
             throw new DuplicateTrendException(); // TREND-001
         }
 
+        List<String> tags = tagGenerationService.generateTags(request.getTitle(), request.getDescription());
+
         Trend trend = Trend.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .category(TrendCategory.valueOf(request.getCategory()))  // 문자열 → enum 변환
+                .tags(tags)
+                .snsMentions(null)      // ★ 초기값 null (Integer)
+                .youtubeTopView(null)   // ★ 초기값 null (Long)
                 .build();
 
         Trend savedTrend = trendRepository.save(trend);
@@ -90,6 +98,16 @@ public class TrendService {
             }
             trend.setNewsScore(newsList.get(0).getScore());
         }
+
+
+        List<Trend> similarTrends = similarTrendService.getSimilarTrends(
+                savedTrend,
+                savedTrend.getTitle(),
+                savedTrend.getDescription(),
+                savedTrend.getCategory().name()
+        );
+        savedTrend.setSimilarTrends(new ArrayList<>(similarTrends));
+        trendRepository.save(savedTrend);
 
         return new TrendCreateResponse(
                 savedTrend.getId(),

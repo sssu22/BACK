@@ -11,14 +11,18 @@ import java.util.UUID;
 public class SimilarTrendDto {
     private final Long trendId;
     private final String title;
-    private final List<String> tags;
+    private final String tag;
     private final Integer score;
 
     public static SimilarTrendDto from(Trend trend) {
+        // tags에서 첫 번째 태그만 반환
+        String tag = (trend.getTags() != null && !trend.getTags().isEmpty())
+                ? trend.getTags().get(0)
+                : "";
         return new SimilarTrendDto(
                 trend.getId(),
                 trend.getTitle(),
-                trend.getTags() != null ? trend.getTags() : List.of(),
+                tag,
                 trend.getScore()
         );
     }

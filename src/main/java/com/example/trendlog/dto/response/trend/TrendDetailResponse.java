@@ -17,7 +17,7 @@ public class TrendDetailResponse {
     private final Long id;
     private final String title;
     private final String description;
-    private final TrendCategory category;
+    private final String category;
     private final Integer score;
     private final Integer viewCount;
     private final Integer likeCount;
@@ -40,13 +40,13 @@ public class TrendDetailResponse {
                 .id(trend.getId())
                 .title(trend.getTitle())
                 .description(trend.getDescription())
-                .category(trend.getCategory())
+                .category(trend.getCategory().getDescription())
                 .score(trend.getScore())
                 .viewCount(trend.getViewCount())
                 .likeCount(trend.getLikeCount())
                 .commentCount(trend.getCommentCount())
-                .snsMentions(trend.getSnsMentions() != null ? trend.getSnsMentions() : 0)
-                .youtubeTopView(trend.getYoutubeTopView())
+                .snsMentions(trend.getSnsMentions()) // null 허용
+                .youtubeTopView(trend.getYoutubeTopView()) // null 허용
                 .peakPeriod(trend.getPeakPeriod() != null ? trend.getPeakPeriod() : "미정")
                 .tags(trend.getTags()!=null?trend.getTags() : List.of())
                 .similarTrends(

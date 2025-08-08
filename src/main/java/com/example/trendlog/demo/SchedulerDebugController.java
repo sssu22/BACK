@@ -1,12 +1,19 @@
 package com.example.trendlog.demo;
 
+import com.example.trendlog.domain.trend.Trend;
 import com.example.trendlog.dto.response.trend.TrendRecommendScoreDto;
 import com.example.trendlog.global.exception.AppException;
 import com.example.trendlog.global.exception.code.PythonErrorCode;
+import com.example.trendlog.service.TrendExportService;
+import com.example.trendlog.service.TrendRecommendCsvImportService;
+import com.example.trendlog.service.TrendRecommendScoreExportService;
+import com.example.trendlog.service.TrendService;
+import com.example.trendlog.repository.trend.TrendRepository;
 import com.example.trendlog.service.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +33,8 @@ public class SchedulerDebugController {
     private final TrendRecommendScoreExportService trendRecommendScoreExportService;
     private final TrendExportService trendExportService;
     private final TrendRecommendCsvImportService trendRecommendCsvImportService;
+    private final TrendRepository trendRepository;
+    private final YoutubeApiService youtubeApiService;
     private final TrendScoreCsvExporter trendScoreCsvExporter;
     private final TrendStatisticsScheduler trendStatisticsScheduler;
 
@@ -77,6 +86,26 @@ public class SchedulerDebugController {
         } catch (Exception e) {
             throw new AppException(PythonErrorCode.PYTHON_EXEC_FAIL);
         }
+    }
+    @GetMapping("youtube")
+    @Transactional
+    public ResponseEntity<String> youtubeTrend() {
+        String[] range= YoutubeApiService.getLastMonthRange();
+        String publishedAfter=range[0];
+        String publishedBefore=range[1];
+
+        List<Trend>trends=trendRepository.findAll();
+        for(Trend trend:trends){
+            List<String> videosIds=youtubeApiService.getYoutubeVideoIds(trend.getTitle(), publishedAfter, publishedBefore);
+            int mentionCount=videosIds.size();
+            Long topViews= youtubeApiService.getTotalViewsOfTopNVideos(videosIds,10);
+
+            trend.setSnsMentions(mentionCount); // 영상 개수
+            trend.setYoutubeTopView(topViews); // 누적 조회수
+        }
+        trendRepository.saveAll(trends);
+        return ResponseEntity.ok("유튜브 언급량 성공");
+
     }
 
     // 시계열 예측

@@ -45,15 +45,15 @@ public class Trend {
 
     @Builder.Default
     @Setter
-    private Integer snsMentions=0; //유튜브 언급량(영상 개수)
+    private Integer snsMentions = null;; //유튜브 언급량(영상 개수)
 
     @Builder.Default
     @Setter
-    private Long youtubeTopView=0L; //유튜브 top 영상들의 조회수
+    private Long youtubeTopView= null;; //유튜브 top 영상들의 조회수
 
     @Builder.Default
     @Setter
-    private String peakPeriod="피크타임이 없음";
+    private String peakPeriod=null;
 
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -67,6 +67,7 @@ public class Trend {
     private List<String> tags = new ArrayList<>();
 
     @Builder.Default
+    @Setter
     @ManyToMany
     @JoinTable(
             name = "trend_similar_trends",
