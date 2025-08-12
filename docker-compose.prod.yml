@@ -1,0 +1,66 @@
+version: "3.8"
+
+services:
+  spring:
+    build:
+      context: .
+      dockerfile: Dockerfile.spring
+    container_name: spring
+    env_file:
+      - .env.prod
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - TZ=Asia/Seoul
+      - GOOGLE_APPLICATION_CREDENTIALS=/secrets/gcp-service-key.json
+    volumes:
+      - ./secrets/gcp-service-key.json:/secrets/gcp-service-key.json:ro
+      - shared-data:/shared
+    ports:
+      - "8080:8080"     # 초기 점검용. Nginx 붙이면 닫아도 됨.
+    depends_on:
+      - db
+      - redis
+      - fastapi
+    restart: always
+
+  fastapi:
+    build:
+      context: ./ai-recommendation
+      dockerfile: Dockerfile
+    container_name: fastapi
+    env_file:
+      - .env.prod
+    environment:
+      - TZ=Asia/Seoul
+      - GOOGLE_APPLICATION_CREDENTIALS=/secrets/gcp-service-key.json
+    volumes:
+      - ./secrets/gcp-service-key.json:/secrets/gcp-service-key.json:ro
+      - shared-data:/shared
+    ports:
+      - "8000:8000"     # 초기 점검용. Nginx 붙이면 닫아도 됨.
+    depends_on:
+      - db
+      - redis
+    restart: always
+
+  db:
+    image: postgres:16
+    container_name: postgres
+    env_file:
+      - .env.prod    # ⬅️ DB도 prod env를 명시적으로 사용
+    environment:
+      - TZ=Asia/Seoul
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    # 외부 포트 미노출(내부 컨테이너만 접근)
+    restart: always
+
+  redis:
+    image: redis:7
+    container_name: redis
+    # 외부 포트 미노출(내부 컨테이너만 접근)
+    restart: always
+
+volumes:
+  pgdata:
+  shared-data:
