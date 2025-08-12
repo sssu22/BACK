@@ -1,8 +1,8 @@
 package com.example.trendlog.global.security.userdetails;
 
-import com.example.trendlog.domain.User;
+import com.example.trendlog.domain.user.User;
 import com.example.trendlog.global.exception.user.UserNotFoundException;
-import com.example.trendlog.repository.UserRepository;
+import com.example.trendlog.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -7,7 +7,7 @@ import com.example.trendlog.dto.response.auth.LoginResponse;
 import com.example.trendlog.dto.response.auth.TokenRefreshResponse;
 import com.example.trendlog.global.docs.AuthSwaggerSpec;
 import com.example.trendlog.global.dto.DataResponse;
-import com.example.trendlog.service.AuthService;
+import com.example.trendlog.service.user.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

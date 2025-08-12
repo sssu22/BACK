@@ -1,7 +1,5 @@
 package com.example.trendlog.repository.trend;
 
-import com.example.trendlog.domain.User;
-import com.example.trendlog.domain.trend.Trend;
 import com.example.trendlog.domain.trend.TrendViewLog;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;

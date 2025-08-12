@@ -1,6 +1,6 @@
 package com.example.trendlog.repository.post;
 
-import com.example.trendlog.domain.User;
+import com.example.trendlog.domain.user.User;
 import com.example.trendlog.domain.post.Emotion;
 import com.example.trendlog.domain.post.Post;
 import com.example.trendlog.domain.trend.Trend;

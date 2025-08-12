@@ -1,6 +1,5 @@
 package com.example.trendlog.repository.trend;
 
-import com.example.trendlog.domain.User;
 import com.example.trendlog.domain.trend.Trend;
 import com.example.trendlog.domain.trend.TrendCategory;
 import com.example.trendlog.dto.response.trend.TrendCsvDto;

@@ -1,6 +1,6 @@
 package com.example.trendlog.repository.post;
 
-import com.example.trendlog.domain.User;
+import com.example.trendlog.domain.user.User;
 import com.example.trendlog.domain.post.PostScrap;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,10 +1,9 @@
 package com.example.trendlog.dto.request.auth;
 
-import com.example.trendlog.domain.User;
+import com.example.trendlog.domain.user.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

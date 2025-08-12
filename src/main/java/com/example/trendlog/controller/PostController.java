@@ -7,15 +7,14 @@ import com.example.trendlog.dto.response.post.PostPopularPagedResponse;
 import com.example.trendlog.dto.response.post.PostResponse;
 import com.example.trendlog.global.docs.PostSwaggerSpec;
 import com.example.trendlog.global.dto.DataResponse;
-import com.example.trendlog.service.PostCommentService;
-import com.example.trendlog.service.PostService;
+import com.example.trendlog.service.post.PostCommentService;
+import com.example.trendlog.service.post.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.UUID;
 
 @Slf4j
 @RestController

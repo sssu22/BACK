@@ -1,13 +1,10 @@
 package com.example.trendlog.domain.trend;
 
-import com.example.trendlog.domain.User;
+import com.example.trendlog.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
-
-import java.util.UUID;
 
 @Entity
 @Getter

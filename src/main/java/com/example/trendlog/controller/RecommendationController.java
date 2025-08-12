@@ -1,14 +1,13 @@
 package com.example.trendlog.controller;
 
-import com.example.trendlog.domain.User;
-import com.example.trendlog.domain.trend.RecommendedNews;
-import com.example.trendlog.dto.request.trend.RecommendSaveRequest;
+import com.example.trendlog.domain.user.User;
 import com.example.trendlog.dto.response.trend.RecommendedTrendResponse;
 import com.example.trendlog.dto.response.trend.TrendPredictionResponse;
 import com.example.trendlog.global.docs.RecommendationSwaggerSpec;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.global.security.userdetails.UserDetailsImpl;
-import com.example.trendlog.service.*;
+import com.example.trendlog.service.trend.TrendPredictionService;
+import com.example.trendlog.service.trend.TrendRecommendationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,14 +19,14 @@ import java.util.List;
 @RequestMapping("/api/v1/recommend")
 @RequiredArgsConstructor
 public class RecommendationController implements RecommendationSwaggerSpec{
-    private final RecommendationService recommendationService;
+    private final TrendRecommendationService trendRecommendationService;
     private final TrendPredictionService trendPredictionService;
 
     @GetMapping
     public ResponseEntity<DataResponse<List<RecommendedTrendResponse>>> getRecommendations(
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         User user = userDetails != null ? userDetails.getUser() : null;
-        List<RecommendedTrendResponse> responses = recommendationService.getRecommendations(user);
+        List<RecommendedTrendResponse> responses = trendRecommendationService.getRecommendations(user);
         return ResponseEntity.ok(DataResponse.from(responses));
     }
 //API 스타일로 할 경우를 생각해서 남겨놓음

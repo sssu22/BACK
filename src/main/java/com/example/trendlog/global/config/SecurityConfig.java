@@ -55,7 +55,7 @@ public class SecurityConfig {
                                 "api/v1/search/posts",
                                 "api/v1/search/trends").permitAll()
                         .requestMatchers(
-                                "/debug/scheduler/**").permitAll()
+                                "/test/scheduler/**").permitAll()
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/api/v1/recommend").permitAll()

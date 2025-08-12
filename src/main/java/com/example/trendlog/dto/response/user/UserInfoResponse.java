@@ -1,6 +1,6 @@
 package com.example.trendlog.dto.response.user;
 
-import com.example.trendlog.domain.User;
+import com.example.trendlog.domain.user.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;

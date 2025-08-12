@@ -4,7 +4,7 @@ import com.example.trendlog.dto.request.password.ForgotPasswordRequest;
 import com.example.trendlog.dto.request.password.ResetPasswordRequest;
 import com.example.trendlog.global.docs.PasswordResetSwaggerSpec;
 import com.example.trendlog.global.dto.DataResponse;
-import com.example.trendlog.service.PasswordResetService;
+import com.example.trendlog.service.user.PasswordResetService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -2,14 +2,12 @@ package com.example.trendlog.repository.trend;
 
 import com.example.trendlog.domain.trend.Trend;
 import com.example.trendlog.domain.trend.TrendLike;
-import com.example.trendlog.domain.User;
-import com.example.trendlog.dto.response.trend.TrendRecommendScoreDto;
+import com.example.trendlog.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface TrendLikeRepository extends JpaRepository<TrendLike, Long> {
     Optional<TrendLike> findByUserAndTrend(User user, Trend trend);

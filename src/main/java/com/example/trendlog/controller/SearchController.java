@@ -1,16 +1,15 @@
 package com.example.trendlog.controller;
 
-import com.example.trendlog.domain.User;
+import com.example.trendlog.domain.user.User;
 import com.example.trendlog.domain.post.PostSearchCondition;
-import com.example.trendlog.domain.trend.TrendCategory;
 import com.example.trendlog.domain.trend.TrendSearchCondition;
 import com.example.trendlog.dto.response.post.PostPagedResponse;
 import com.example.trendlog.dto.response.trend.TrendSearchPagedResponse;
 import com.example.trendlog.global.docs.SearchSwaggerSpec;
 import com.example.trendlog.global.dto.DataResponse;
-import com.example.trendlog.service.PostService;
-import com.example.trendlog.service.TrendService;
-import com.example.trendlog.service.UserService;
+import com.example.trendlog.service.post.PostService;
+import com.example.trendlog.service.trend.TrendService;
+import com.example.trendlog.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;

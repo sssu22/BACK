@@ -1,6 +1,6 @@
 package com.example.trendlog.repository.trend;
 
-import com.example.trendlog.domain.User;
+import com.example.trendlog.domain.user.User;
 import com.example.trendlog.domain.trend.UserTrendRecommendation;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,20 +1,15 @@
 package com.example.trendlog.controller;
 
-import com.example.trendlog.domain.User;
+import com.example.trendlog.domain.user.User;
 import com.example.trendlog.dto.request.trend.TrendCommentCreateRequest;
 import com.example.trendlog.dto.request.trend.TrendCreateRequest;
 import com.example.trendlog.dto.response.trend.*;
 import com.example.trendlog.global.docs.TrendSwaggerSpec;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.global.security.userdetails.UserDetailsImpl;
-import com.example.trendlog.service.TrendService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.example.trendlog.service.trend.TrendService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

@@ -1,6 +1,6 @@
 package com.example.trendlog.dto.response.mypage;
 
-import com.example.trendlog.domain.User;
+import com.example.trendlog.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 

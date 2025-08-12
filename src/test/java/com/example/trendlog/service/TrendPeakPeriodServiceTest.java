@@ -3,6 +3,7 @@ package com.example.trendlog.service;
 import com.example.trendlog.domain.trend.Trend;
 import com.example.trendlog.repository.post.PostRepository;
 import com.example.trendlog.repository.trend.TrendRepository;
+import com.example.trendlog.service.trend.TrendService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

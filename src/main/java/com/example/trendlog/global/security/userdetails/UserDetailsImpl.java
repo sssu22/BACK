@@ -1,6 +1,6 @@
 package com.example.trendlog.global.security.userdetails;
 
-import com.example.trendlog.domain.User;
+import com.example.trendlog.domain.user.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
