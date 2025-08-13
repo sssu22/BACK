@@ -25,7 +25,7 @@ public class TrendScoreCsvExporter {
         List<TrendScore> scores = trendScoreRepository.findAll();
 
 //        String filePath = System.getProperty("user.dir") + "/ai-recommendation/trend_score.csv";
-        String filePath = "/var/lib/docker/volumes/trendlog_shared-data/_data/trend_score.csv";
+        String filePath = "/shared/trend_scores.csv";
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             // CSV 헤더

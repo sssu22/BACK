@@ -34,6 +34,7 @@ public class SchedulerTestController {
     private final YoutubeApiService youtubeApiService;
     private final TrendScoreCsvExporter trendScoreCsvExporter;
     private final TrendStatisticsScheduler trendStatisticsScheduler;
+    private final TrendStatisticsScheduler trendScheduler; // triggerDailyRecommend가 있는 클래스
 
     @PostMapping("/popular")
     public ResponseEntity<Void> runPopularTrendJob() {
@@ -67,7 +68,7 @@ public class SchedulerTestController {
 
     @GetMapping("/save-recommend")
     public ResponseEntity<String> importDailyRecommendation() {
-        String path = "ai-recommendation/recommended_trends.csv";
+        String path = "/shared/recommended_trends.csv";
         trendRecommendCsvImportService.importFromCsv(path);
         return ResponseEntity.ok("추천 결과 CSV → DB 저장 완료");
 
@@ -75,14 +76,21 @@ public class SchedulerTestController {
 
     @GetMapping("/run-python")
     public ResponseEntity<String> runPython() {
+//        try {
+//            ProcessBuilder pb = new ProcessBuilder("python3", "ai-recommendation/recommend.py");
+//            pb.inheritIO(); // 로그 출력 확인용
+//            Process process = pb.start();
+//            return ResponseEntity.ok("파이썬 실행 완료->추천 CSV 생성");
+//        } catch (Exception e) {
+//            throw new AppException(PythonErrorCode.PYTHON_EXEC_FAIL);
+//        }
         try {
-            ProcessBuilder pb = new ProcessBuilder("python3", "ai-recommendation/recommend.py");
-            pb.inheritIO(); // 로그 출력 확인용
-            Process process = pb.start();
-            return ResponseEntity.ok("파이썬 실행 완료->추천 CSV 생성");
+            trendScheduler.triggerDailyRecommend(); // 스케줄러 메소드 직접 호출
+            return ResponseEntity.ok("FastAPI daily recommend 호출 완료");
         } catch (Exception e) {
             throw new AppException(PythonErrorCode.PYTHON_EXEC_FAIL);
         }
+
     }
     @GetMapping("youtube")
     @Transactional
@@ -109,7 +117,7 @@ public class SchedulerTestController {
     @PostMapping("/predict")
     public ResponseEntity<String> runTrendPredictionManually() {
         trendScoreCsvExporter.exportAllTrendScoresToCsv(); // CSV 생성
-        trendStatisticsScheduler.runProphetScript();         // Python 실행
+//        trendStatisticsScheduler.runProphetScript();         // Python 실행
         trendStatisticsScheduler.importPredictionCsv();      // 결과 저장
         return ResponseEntity.ok("트렌드 예측 수동 실행 완료");
     }

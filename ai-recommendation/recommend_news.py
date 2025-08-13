@@ -74,10 +74,23 @@ def main():
             "score": score
         })
 
-    os.makedirs("output", exist_ok=True)
+#     os.makedirs("output", exist_ok=True)
+#     safe_keyword = keyword.replace(" ", "_")
+#     output_path = f"./output/recommended_news_{safe_keyword}_temp.csv"
+#     pd.DataFrame(results).to_csv(output_path, index=False)
+#     print(f"✅ 저장 완료: {output_path}")
+# 공유 디렉토리 보장
+    os.makedirs("/shared", exist_ok=True)
+
+    # 키워드 안전하게 변환
     safe_keyword = keyword.replace(" ", "_")
-    output_path = f"./output/recommended_news_{safe_keyword}_temp.csv"
+
+    # 저장 경로를 /shared로 변경
+    output_path = f"/shared/recommended_news_{safe_keyword}_temp.csv"
+
+    # CSV 저장
     pd.DataFrame(results).to_csv(output_path, index=False)
+
     print(f"✅ 저장 완료: {output_path}")
 
 if __name__ == "__main__":

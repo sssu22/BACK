@@ -67,7 +67,9 @@ public class TrendRecommendScoreExportService {
 
     // csv에 저장
     public void exportScoresToCsv(List<TrendRecommendScoreDto> scores) {
-        File file = new File("ai-recommendation/trend_recommend_scores.csv");
+//        File file = new File("ai-recommendation/trend_recommend_scores.csv");
+        File file = new File("/shared/trend_recommend_scores.csv");
+
         try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
             writer.println("user_id,trend_id,score"); // 헤더
             for (TrendRecommendScoreDto dto : scores) {

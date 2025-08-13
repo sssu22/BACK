@@ -95,7 +95,8 @@ public class TrendStatisticsScheduler {
 
     @Scheduled(cron = "0 0 3 * * *")
     public void importDailyRecommendation() {
-        String path = "ai-recommendation/recommended_trends.csv";
+//        String path = "ai-recommendation/recommended_trends.csv";
+        String path = "/shared/recommended_trends.csv";
         trendRecommendCsvImportService.importFromCsv(path);
         log.info("추천 결과 CSV → DB 저장 완료");
     }
@@ -195,7 +196,9 @@ public class TrendStatisticsScheduler {
         // 중복 저장하지 않기 위해 저장 전 데이터 모두 삭제
         trendPredictionRepository.deleteAll();
 
-        String filePath = System.getProperty("user.dir") + "/ai-recommendation/predicted_top3.csv";
+//        String filePath = System.getProperty("user.dir") + "/ai-recommendation/predicted_top3.csv";
+        String filePath = "/shared/predicted_top3.csv";
+
         File file = new File(filePath);
 
         if (!file.exists()) {
