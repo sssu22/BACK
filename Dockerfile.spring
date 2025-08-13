@@ -2,11 +2,11 @@
 FROM gradle:8.7.0-jdk17 AS builder
 WORKDIR /app
 
-# gradle 캐시 준비
+# gradle 캐시 활용
 COPY build.gradle settings.gradle gradlew gradlew.bat ./
 COPY gradle gradle
-RUN chmod +x gradlew || true
-RUN ./gradlew --no-daemon tasks || true
+RUN chmod +x gradlew
+RUN ./gradlew --no-daemon dependencies || true
 
 # 소스 복사 후 빌드
 COPY . .

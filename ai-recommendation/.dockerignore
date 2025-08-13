@@ -1,24 +1,33 @@
-# VCS / 캐시
+# Git
 .git
-**/__pycache__/
-**/*.pyc
+.gitignore
+
+# Python 캐시
+__pycache__/
+*.pyc
 *.pyo
 *.pyd
 
-# 환경변수 파일
+# OS/IDE
+.DS_Store
+*.log
+.vscode/
+.idea/
+
+# 환경변수
 .env
 .env.*
 !.env.example
 
-# 데이터/산출물 (이미지에 포함 불필요, 런타임에 /shared 사용)
+# 데이터/출력
 *.csv
 output/
 dump.rdb
 
-# 상위 큰 디렉토리(백엔드/프론트 산출물) 빌드 컨텍스트 제외
-../BACK/
-../FRONT/
+# 테스트 / 문서
+tests/
+docs/
 
-# OS/IDE 잡파일
-.DS_Store
-*.log
+# 빌드 불필요 항목
+secrets/
+*.jar
