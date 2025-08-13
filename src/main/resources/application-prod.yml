@@ -55,3 +55,6 @@ youtube:
 
 kakao:
   rest-api-key: ${KAKAO_REST_API_KEY:}
+
+fastapi:
+  base-url: ${FASTAPI_BASE_URL:http://fastapi:8000}

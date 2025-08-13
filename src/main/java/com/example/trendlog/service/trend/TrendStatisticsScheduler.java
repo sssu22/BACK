@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.*;
 import java.time.LocalDate;
@@ -28,6 +29,7 @@ import static com.example.trendlog.global.exception.code.TrendErrorCode.TREND_SC
 @Component
 @RequiredArgsConstructor
 public class TrendStatisticsScheduler {
+    private final WebClient fastApiWebClient;
     private final TrendRecommendScoreExportService trendRecommendScoreExportService;
     private final TrendExportService trendExportService;
     private final TrendService trendService;
@@ -51,23 +53,39 @@ public class TrendStatisticsScheduler {
         log.info("전체 트렌드 csv 파일 생성 완료.");
     }
 
-    @Scheduled(cron = "0 57 2 * * *")
-    public void runPythonScript() {
+//    @Scheduled(cron = "0 57 2 * * *")
+//    public void runPythonScript() {
+//        try {
+//            ProcessBuilder pb = new ProcessBuilder("python3", "ai-recommendation/recommend.py");
+//            pb.inheritIO(); // 로그 출력 확인용
+//            Process process = pb.start();
+//            int exitCode = process.waitFor();
+//
+//            if (exitCode == 0) {
+//                log.info("Python 추천 스크립트 실행 완료");
+//            } else {
+//                log.error("Python 추천 스크립트 실패. 종료코드: {}", exitCode);
+//            }
+//        } catch (Exception e) {
+//            throw new AppException(PYTHON_EXEC_FAIL);
+//        }
+//    }
+    @Scheduled(cron = "0 57 2 * * *", zone = "Asia/Seoul")
+    public void triggerDailyRecommend() {
         try {
-            ProcessBuilder pb = new ProcessBuilder("python3", "ai-recommendation/recommend.py");
-            pb.inheritIO(); // 로그 출력 확인용
-            Process process = pb.start();
-            int exitCode = process.waitFor();
+            fastApiWebClient.post()
+                    .uri("/jobs/trends/recommend/daily")
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .doOnNext(body -> log.info("FastAPI daily recommend queued: {}", body))
+                    .block(); // 배치 큐 등록이므로 block() OK
 
-            if (exitCode == 0) {
-                log.info("Python 추천 스크립트 실행 완료");
-            } else {
-                log.error("Python 추천 스크립트 실패. 종료코드: {}", exitCode);
-            }
         } catch (Exception e) {
-            throw new AppException(PYTHON_EXEC_FAIL);
+            log.error("FastAPI daily recommend 호출 실패", e);
+            // 알림/재시도 정책은 팀 규칙에 맞게
         }
     }
+
 
     @Scheduled(cron = "0 0 0 1 * *") // 매월 1일 00:00에 실행
     public void updatePeakPeriods() {
@@ -136,42 +154,42 @@ public class TrendStatisticsScheduler {
         log.info("모든 트렌드의 총 점수 업데이트 완료");
     }
 
-    // 트렌드 시계열 분석
-    @Scheduled(cron = "0 30 2 * * MON")
-    public void runTrendPredictionPipeline() {
-        trendScoreCsvExporter.exportAllTrendScoresToCsv(); // CSV 생성
-        runProphetScript(); // ProcessBuilder로 recommend_trends_time_series.py 실행
-        importPredictionCsv(); // 예측 결과 DB 저장
-    }
+//    // 트렌드 시계열 분석
+//    @Scheduled(cron = "0 30 2 * * MON")
+//    public void runTrendPredictionPipeline() {
+//        trendScoreCsvExporter.exportAllTrendScoresToCsv(); // CSV 생성
+//        runProphetScript(); // ProcessBuilder로 recommend_trends_time_series.py 실행
+//        importPredictionCsv(); // 예측 결과 DB 저장
+//    }
 
 
-    public void runProphetScript() {
-        try {
-            ProcessBuilder pb = new ProcessBuilder(
-                    "python3",
-                    "./ai-recommendation/recommend_trends_time_series.py"
-            );
-            pb.directory(new File(System.getProperty("user.dir")));
-            pb.redirectErrorStream(true);
-            Process process = pb.start();
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println("[Prophet] " + line);
-            }
-
-            int exitCode = process.waitFor();
-            if (exitCode == 0) {
-                log.info("Prophet 예측 스크립트 실행 성공");
-            } else {
-                log.error("Prophet 스크립트 실행 실패. 종료 코드: " + exitCode);
-            }
-
-        } catch (Exception e) {
-            throw new AppException(PYTHON_EXEC_FAIL);
-        }
-    }
+//    public void runProphetScript() {
+//        try {
+//            ProcessBuilder pb = new ProcessBuilder(
+//                    "python3",
+//                    "./ai-recommendation/recommend_trends_time_series.py"
+//            );
+//            pb.directory(new File(System.getProperty("user.dir")));
+//            pb.redirectErrorStream(true);
+//            Process process = pb.start();
+//
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                System.out.println("[Prophet] " + line);
+//            }
+//
+//            int exitCode = process.waitFor();
+//            if (exitCode == 0) {
+//                log.info("Prophet 예측 스크립트 실행 성공");
+//            } else {
+//                log.error("Prophet 스크립트 실행 실패. 종료 코드: " + exitCode);
+//            }
+//
+//        } catch (Exception e) {
+//            throw new AppException(PYTHON_EXEC_FAIL);
+//        }
+//    }
 
     public void importPredictionCsv() {
         // 중복 저장하지 않기 위해 저장 전 데이터 모두 삭제

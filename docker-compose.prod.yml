@@ -10,6 +10,7 @@ services:
       - .env.prod
     environment:
       - SPRING_PROFILES_ACTIVE=prod
+      - FASTAPI_BASE_URL=http://fastapi:8000
       - TZ=Asia/Seoul
       - GOOGLE_APPLICATION_CREDENTIALS=/secrets/gcp-service-key.json
       - SPRING_DATA_REDIS_HOST=redis
