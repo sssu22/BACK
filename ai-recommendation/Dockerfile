@@ -33,6 +33,9 @@ RUN apt-get clean && apt-get update -y --fix-missing && \
     apt-get install -y --no-install-recommends \
         openjdk-11-jre-headless \
         libgomp1 \
+        gcc \
+        python3-dev \
+        libopenblas-dev \
         curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
