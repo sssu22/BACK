@@ -5,21 +5,32 @@ from sqlalchemy import create_engine
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+from sqlalchemy.engine import URL
 
 # 환경변수 불러오기
 # load_dotenv()
 # load_dotenv("/srv/trendlog/.env.prod")  # 절대 경로 지정
 
-DB_HOST = os.getenv("DB_HOST")
-DB_PORT = os.getenv("DB_PORT")
-DB_USER = os.getenv("DB_USER")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
-DB_NAME = os.getenv("DB_NAME")
+# DB_HOST = os.getenv("DB_HOST")
+# DB_PORT = os.getenv("DB_PORT")
+# DB_USER = os.getenv("DB_USER")
+# DB_PASSWORD = os.getenv("DB_PASSWORD")
+# DB_NAME = os.getenv("DB_NAME")
+#
+# DB_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+#
+# # SQLAlchemy 엔진 준비
+# engine = create_engine(DB_URL)
+url = URL.create(
+    drivername="postgresql+psycopg2",
+    username=DB_USER,
+    password=DB_PASSWORD,  # 특수문자 자동 이스케이프
+    host=DB_HOST,
+    port=int(DB_PORT),
+    database=DB_NAME,
+)
 
-DB_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-
-# SQLAlchemy 엔진 준비
-engine = create_engine(DB_URL)
+engine = create_engine(url, pool_pre_ping=True)
 
 # 임베딩 모델 로드(최초 1회만)
 # model = SentenceTransformer('jhgan/ko-sroberta-multitask')
