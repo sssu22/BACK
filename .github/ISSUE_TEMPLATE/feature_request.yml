@@ -1,0 +1,55 @@
+name: "🛠 BE Feature Request"
+description: "백엔드 신규 기능 개발 요청 또는 시스템 개선 제안"
+title: "[Feat] "
+labels: ["backend", "feature"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: "📌 기능 요약"
+      description: "요청 기능에 대한 간단한 설명을 작성해주세요."
+      placeholder: "예: 회의 정보 조회 API에 발언자 목록 포함"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: "📈 기능 필요성"
+      description: "왜 이 기능이 필요한지 구체적으로 설명해주세요."
+      placeholder: "예: 프론트에서 회의록 사용자 표시를 위해 발언자 정보 필요"
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: "⚙️ 구현 방향"
+      description: "예상 로직, DB 설계 변경, 외부 API 연동 등을 자유롭게 적어주세요."
+      placeholder: "예: `SpeakerInfo` 테이블에서 join, DTO 확장"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: "🔧 예상 작업 범위"
+      description: "이 기능 개발 시 예상되는 작업을 선택해주세요."
+      options:
+        - label: "API 설계 및 개발"
+        - label: "DB 모델 추가/수정"
+        - label: "JWT / 인증 처리"
+        - label: "에러 핸들링 및 응답 포맷"
+        - label: "외부 API 연동"
+        - label: "테스트 코드 작성"
+        - label: "Swagger 문서화"
+        - label: "리팩토링 및 성능 개선"
+
+  - type: input
+    id: deadline
+    attributes:
+      label: "📆 목표 완료일"
+      description: "이슈 해결 목표일이 있다면 작성해주세요. (선택)"
+      placeholder: "예: 2025-07-22"
+    validations:
+      required: false
