@@ -179,12 +179,15 @@
 
 ## 🗄️ ERD
 <img width="1223" height="636" alt="스크린샷 2025-08-14 오전 1 49 08" src="https://github.com/user-attachments/assets/77d2bcf8-05c1-4e59-b5b0-0c5b7d7c4e59" />
+
 </br>
 
 ## 📎 Software Architecture
 
 ![trendlog 다이어그램 drawio (1)](https://github.com/user-attachments/assets/dbe556be-ecc9-4be5-947a-562723a08ff9)
+
 </br>
+
 ## 📑 API
 <p align="left">
   <img width="497" height="761" alt="KakaoTalk_Photo_2025-08-14-15-22-24" src="https://github.com/user-attachments/assets/cce2f880-7823-4739-affe-ba1fe734dc92" />
