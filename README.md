@@ -228,3 +228,6 @@
 ## 🗄️ ERD
 <img width="1223" height="636" alt="스크린샷 2025-08-14 오전 1 49 08" src="https://github.com/user-attachments/assets/77d2bcf8-05c1-4e59-b5b0-0c5b7d7c4e59" />
 
+## 📎 Software Architecture
+![trendlog 다이어그램 drawio](https://github.com/user-attachments/assets/46b284f8-ff07-4df6-8951-fe9d5849b6e0)
+
