@@ -1,5 +1,5 @@
 import os
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import pandas as pd
 from sqlalchemy import create_engine
 from sentence_transformers import SentenceTransformer
@@ -16,20 +16,29 @@ from sqlalchemy.engine import URL
 # DB_USER = os.getenv("DB_USER")
 # DB_PASSWORD = os.getenv("DB_PASSWORD")
 # DB_NAME = os.getenv("DB_NAME")
-#
 # DB_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 #
 # # SQLAlchemy 엔진 준비
 # engine = create_engine(DB_URL)
+DB_HOST = os.getenv("DB_HOST", "db")
+DB_PORT = int(os.getenv("DB_PORT") or 5432)  # None이면 5432
+DB_USER = os.getenv("DB_USER", "postgres")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "")
+DB_NAME = os.getenv("DB_NAME", "postgres")
+
+print(f"[DB] host={DB_HOST} port={DB_PORT} db={DB_NAME} user={DB_USER}")
+
+# 2) URL 생성 (특수문자 자동 인코딩)
 url = URL.create(
     drivername="postgresql+psycopg2",
     username=DB_USER,
-    password=DB_PASSWORD,  # 특수문자 자동 이스케이프
+    password=DB_PASSWORD,
     host=DB_HOST,
-    port=int(DB_PORT),
+    port=DB_PORT,
     database=DB_NAME,
 )
 
+# 3) 엔진 생성
 engine = create_engine(url, pool_pre_ping=True)
 
 # 임베딩 모델 로드(최초 1회만)
