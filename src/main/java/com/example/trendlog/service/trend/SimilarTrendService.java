@@ -18,8 +18,8 @@ import java.util.List;
 public class SimilarTrendService {
     private final TrendRepository trendRepository;
 //    private final WebClient webClient = WebClient.create("http://localhost:8000");
-    private final WebClient webClient = WebClient.create("http://fastapi:8000");
-
+//    private final WebClient webClient = WebClient.create("http://fastapi:8000");
+    private final WebClient fastApiWebClient;
 
     public List<Trend> getSimilarTrends(Trend trend, String title, String description, String category) {
         SimilarTrendRequest request = new SimilarTrendRequest(
@@ -28,7 +28,7 @@ public class SimilarTrendService {
                 category
         );
         try{
-            SimilarTrendIdsResponse response = webClient.post()
+            SimilarTrendIdsResponse response = fastApiWebClient.post()
                     .uri("/find-similar-trends")
                     .bodyValue(request)
                     .retrieve()

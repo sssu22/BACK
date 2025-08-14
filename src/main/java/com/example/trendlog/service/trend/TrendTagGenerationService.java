@@ -14,14 +14,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TrendTagGenerationService {
 //    private final WebClient webClient=WebClient.create("http://localhost:8000");
-    private final WebClient webClient = WebClient.create("http://fastapi:8000");
-
+//    private final WebClient webClient = WebClient.create("http://fastapi:8000");
+    private final WebClient fastApiWebClient;
 
     public List<String> generateTags(String title, String description){
         try{
             TrendTagRequest request = new TrendTagRequest(title, description);
 
-            TrendTagResponse response = webClient.post()
+            TrendTagResponse response = fastApiWebClient.post()
                     .uri("/generate-tags")
                     .bodyValue(request)
                     .retrieve()
