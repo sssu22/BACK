@@ -55,7 +55,7 @@ public class TrendForecastJob {
                 .block();
     }
 
-    private void importPredictionCsv() {
+    public void importPredictionCsv() {
         try {
             trendPredictionRepository.deleteAll();
 

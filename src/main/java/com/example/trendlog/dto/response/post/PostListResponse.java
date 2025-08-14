@@ -17,13 +17,12 @@ public record PostListResponse(
         List<String> tags
 ) {
     public static PostListResponse from(Post post) {
-        String description = post.getDescription();
         return new PostListResponse(
                 post.getId(),
                 post.getTitle(),
                 post.getExperienceDate(),
                 post.getLocation(),
-                description != null ? (description.length()<30?description:description.substring(0,30)) : null,
+                post.getDescription(),
                 post.getEmotion().name(),
                 post.getTrend().getTitle(), // 트렌드 이름
                 post.getTrend().getScore(),
@@ -34,13 +33,12 @@ public record PostListResponse(
     }
 
     public static PostListResponse from(Post post, List<String> tags) {
-        String description = post.getDescription();
         return new PostListResponse(
                 post.getId(),
                 post.getTitle(),
                 post.getExperienceDate(),
                 post.getLocation(),
-                description != null ? (description.length()<30?description:description.substring(0,30)) : null,
+                post.getDescription(),
                 post.getEmotion().name(),
                 post.getTrend().getTitle(), // 트렌드 이름
                 post.getTrend().getScore(),
