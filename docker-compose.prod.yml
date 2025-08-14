@@ -38,6 +38,11 @@ services:
     environment:
       - TZ=Asia/Seoul
       - GOOGLE_APPLICATION_CREDENTIALS=/secrets/gcp-service-key.json
+      - JAVA_TOOL_OPTIONS=-Xms64m -Xmx256m   # ★ 추가: Komoran JVM 메모리 상한
+      - TOKENIZERS_PARALLELISM=false         # 토크나이저 스레드 축소
+      - OMP_NUM_THREADS=1                    # BLAS 스레드 축소
+      - SENTENCE_TRANSFORMERS_HOME=/shared/.cache/sentence-transformers
+      - TRANSFORMERS_CACHE=/shared/.cache/huggingface
     volumes:
       - ./secrets/gcp-service-key.json:/secrets/gcp-service-key.json:ro
       - shared-data:/shared
