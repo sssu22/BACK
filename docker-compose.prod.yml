@@ -34,13 +34,12 @@ services:
       dockerfile: Dockerfile
     container_name: fastapi
     env_file:
-      - /srv/trendlog/.env.prod
+      - .env.prod
     environment:
       - TZ=Asia/Seoul
       - GOOGLE_APPLICATION_CREDENTIALS=/secrets/gcp-service-key.json
     volumes:
       - ./secrets/gcp-service-key.json:/secrets/gcp-service-key.json:ro
-      - ./../.env.prod:/srv/trendlog/.env.prod:ro  # 호스트 → 컨테이너 마운트
       - shared-data:/shared
     ports:
       - "8000:8000"     # 초기 점검용. Nginx 붙이면 닫아도 됨.

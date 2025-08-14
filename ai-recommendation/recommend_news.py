@@ -9,7 +9,7 @@ import urllib.parse
 from dotenv import load_dotenv
 
 # load_dotenv(dotenv_path="../.env")  # 바깥에 있는 .env 사용
-load_dotenv("/srv/trendlog/.env.prod")
+# load_dotenv("/srv/trendlog/.env.prod")
 NAVER_CLIENT_ID = os.getenv("NAVER_CLIENT_ID")
 NAVER_CLIENT_SECRET = os.getenv("NAVER_CLIENT_SECRET")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")

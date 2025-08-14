@@ -8,7 +8,7 @@ import numpy as np
 
 # 환경변수 불러오기
 # load_dotenv()
-load_dotenv("/srv/trendlog/.env.prod")  # 절대 경로 지정
+# load_dotenv("/srv/trendlog/.env.prod")  # 절대 경로 지정
 
 DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")
