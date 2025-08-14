@@ -35,6 +35,7 @@ public class SchedulerTestController {
     private final TrendScoreCsvExporter trendScoreCsvExporter;
     private final TrendStatisticsScheduler trendStatisticsScheduler;
     private final TrendStatisticsScheduler trendScheduler; // triggerDailyRecommend가 있는 클래스
+    private final TrendForecastJob trendForecastJob;
 
     @PostMapping("/popular")
     public ResponseEntity<Void> runPopularTrendJob() {
@@ -116,8 +117,9 @@ public class SchedulerTestController {
     // 시계열 예측
     @PostMapping("/predict")
     public ResponseEntity<String> runTrendPredictionManually() {
-        trendScoreCsvExporter.exportAllTrendScoresToCsv(); // CSV 생성
+//        trendScoreCsvExporter.exportAllTrendScoresToCsv(); // CSV 생성
 //        trendStatisticsScheduler.runProphetScript();         // Python 실행
+        trendForecastJob.runProphetScript();
         trendStatisticsScheduler.importPredictionCsv();      // 결과 저장
         return ResponseEntity.ok("트렌드 예측 수동 실행 완료");
     }

@@ -36,13 +36,7 @@ public class TrendForecastJob {
             // 1) 모든 점수 CSV로 export (반드시 /shared 경로로 쓰게 수정)
             trendScoreCsvExporter.exportAllTrendScoresToCsv();
 
-            // 2) FastAPI에 예측 실행 요청
-            fastApiWebClient.post()
-                    .uri("/jobs/trends/forecast/weekly")
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .doOnNext(body -> log.info("FastAPI weekly forecast queued: {}", body))
-                    .block();
+            runProphetScript();
 
             // 3) 예측 결과 CSV import (/shared/predicted_top3.csv)
             importPredictionCsv();
@@ -50,6 +44,15 @@ public class TrendForecastJob {
         } catch (Exception e) {
             log.error("주간 예측 파이프라인 실패", e);
         }
+    }
+    public void runProphetScript(){
+        // 2) FastAPI에 예측 실행 요청
+        fastApiWebClient.post()
+                .uri("/jobs/trends/forecast/weekly")
+                .retrieve()
+                .bodyToMono(String.class)
+                .doOnNext(body -> log.info("FastAPI weekly forecast queued: {}", body))
+                .block();
     }
 
     private void importPredictionCsv() {
