@@ -7,6 +7,7 @@ import com.example.trendlog.dto.response.user.UserInfoResponse;
 import com.example.trendlog.dto.request.user.UserUpdateRequest;
 import com.example.trendlog.global.docs.UserSwaggerSpec;
 import com.example.trendlog.global.dto.DataResponse;
+import com.example.trendlog.global.security.userdetails.UserDetailsImpl;
 import com.example.trendlog.service.external.GCSService;
 import com.example.trendlog.service.post.PostService;
 import com.example.trendlog.service.user.RefreshTokenService;
@@ -15,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,9 +49,9 @@ public class UserController implements UserSwaggerSpec {
     }
 
     @DeleteMapping("/me")
-    public ResponseEntity<DataResponse<Void>> deleteUser(Principal principal){
-        userService.deleteUser(principal);
-        refreshTokenService.deleteRefreshToken(principal.getName());
+    public ResponseEntity<DataResponse<Void>> deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        userService.deleteUser(userDetails.getUserId());
+        refreshTokenService.deleteRefreshToken(userDetails.getUser());
         return ResponseEntity.ok(DataResponse.ok());
     }
 

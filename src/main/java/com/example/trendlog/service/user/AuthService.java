@@ -20,6 +20,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -72,8 +74,10 @@ public class AuthService {
     /**
      * 로그아웃
      */
-    public void logout(String email){
-        refreshTokenService.deleteRefreshToken(email);
+    public void logout(UUID userID){
+        User user = userRepository.findById(userID)
+                .orElseThrow(UserNotFoundException::new);
+        refreshTokenService.deleteRefreshToken(user);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.example.trendlog.service.user;
 
+import com.example.trendlog.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,8 @@ public class RefreshTokenService {
     }
 
     //삭제: 로그아웃 시 refreshToken 제거
-    public void deleteRefreshToken(String email) {
-        redisTemplate.delete(email);
+    public void deleteRefreshToken(User user) {
+        redisTemplate.delete(user.getEmail());
     }
 
     //검증: 요청받은 refreshToken이 저장된 값과 일치하는지 확인

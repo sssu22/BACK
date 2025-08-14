@@ -7,6 +7,7 @@ import com.example.trendlog.dto.response.user.UserInfoResponse;
 import com.example.trendlog.dto.request.user.UserUpdateRequest;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.global.dto.ErrorResponse;
+import com.example.trendlog.global.security.userdetails.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,6 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -74,7 +76,8 @@ public interface UserSwaggerSpec {
             @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자 (USER-011)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    public ResponseEntity<DataResponse<Void>> deleteUser(Principal principal);
+    public ResponseEntity<DataResponse<Void>> deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails);
+
 
     @Operation(
             summary = "프로필 이미지 업로드",

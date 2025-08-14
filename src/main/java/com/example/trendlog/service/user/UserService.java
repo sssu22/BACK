@@ -45,8 +45,9 @@ public class UserService {
 
     //회원탈퇴
     @Transactional
-    public void deleteUser(Principal principal) {
-        User user=getUserByEmail(principal.getName());
+    public void deleteUser(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
         if ("deleted".equals(user.getProvider())) {
             throw new AppException(UserErrorCode.ALREADY_DELETED_USER); // USER-013
         }

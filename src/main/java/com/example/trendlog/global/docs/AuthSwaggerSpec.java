@@ -7,6 +7,7 @@ import com.example.trendlog.dto.response.auth.LoginResponse;
 import com.example.trendlog.dto.response.auth.TokenRefreshResponse;
 import com.example.trendlog.global.dto.DataResponse;
 import com.example.trendlog.global.dto.ErrorResponse;
+import com.example.trendlog.global.security.userdetails.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -58,7 +59,6 @@ public interface AuthSwaggerSpec {
             @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자 (USER-011)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    ResponseEntity<DataResponse<Void>> logout(@Parameter(hidden = true) @AuthenticationPrincipal Authentication authentication);
-
+    public ResponseEntity<DataResponse<Void>> logout(@AuthenticationPrincipal UserDetailsImpl userDetails);
 
 }

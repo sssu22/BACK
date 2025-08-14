@@ -7,12 +7,14 @@ import com.example.trendlog.dto.response.auth.LoginResponse;
 import com.example.trendlog.dto.response.auth.TokenRefreshResponse;
 import com.example.trendlog.global.docs.AuthSwaggerSpec;
 import com.example.trendlog.global.dto.DataResponse;
+import com.example.trendlog.global.security.userdetails.UserDetailsImpl;
 import com.example.trendlog.service.user.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,9 +48,8 @@ public class AuthController implements AuthSwaggerSpec {
      * 로그아웃
      */
     @PostMapping("/logout")
-    public ResponseEntity<DataResponse<Void>> logout(Authentication authentication){
-        String email=authentication.getName();
-        authService.logout(email);
+    public ResponseEntity<DataResponse<Void>> logout(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        authService.logout(userDetails.getUserId());
         return ResponseEntity.ok(DataResponse.ok());
     }
 
