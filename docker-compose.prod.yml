@@ -21,7 +21,7 @@ services:
       - ./secrets/gcp-service-key.json:/secrets/gcp-service-key.json:ro
       - shared-data:/shared
     ports:
-      - "8080:8080"     # 초기 점검용. Nginx 붙이면 닫아도 됨.
+      - "8080:8080"     # 초기 점검용.
     depends_on:
       - db
       - redis
@@ -38,7 +38,7 @@ services:
     environment:
       - TZ=Asia/Seoul
       - GOOGLE_APPLICATION_CREDENTIALS=/secrets/gcp-service-key.json
-      - JAVA_TOOL_OPTIONS=-Xms64m -Xmx256m   # ★ 추가: Komoran JVM 메모리 상한
+      - JAVA_TOOL_OPTIONS=-Xms64m -Xmx256m   # Komoran JVM 메모리 상한
       - TOKENIZERS_PARALLELISM=false         # 토크나이저 스레드 축소
       - OMP_NUM_THREADS=1                    # BLAS 스레드 축소
       - SENTENCE_TRANSFORMERS_HOME=/shared/.cache/sentence-transformers
@@ -47,7 +47,7 @@ services:
       - ./secrets/gcp-service-key.json:/secrets/gcp-service-key.json:ro
       - shared-data:/shared
     ports:
-      - "8000:8000"     # 초기 점검용. Nginx 붙이면 닫아도 됨.
+      - "8000:8000"     # 초기 점검용.
     depends_on:
       - db
       - redis
@@ -57,7 +57,7 @@ services:
     image: postgres:16
     container_name: postgres
     env_file:
-      - .env.prod    # ⬅️ DB도 prod env를 명시적으로 사용
+      - .env.prod    # DB도 prod env를 명시적으로 사용
     environment:
       - TZ=Asia/Seoul
     volumes:

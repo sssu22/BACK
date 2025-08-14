@@ -8,8 +8,7 @@ import os
 import urllib.parse
 from dotenv import load_dotenv
 
-# load_dotenv(dotenv_path="../.env")  # 바깥에 있는 .env 사용
-# load_dotenv("/srv/trendlog/.env.prod")
+
 NAVER_CLIENT_ID = os.getenv("NAVER_CLIENT_ID")
 NAVER_CLIENT_SECRET = os.getenv("NAVER_CLIENT_SECRET")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -74,12 +73,8 @@ def main():
             "score": score
         })
 
-#     os.makedirs("output", exist_ok=True)
-#     safe_keyword = keyword.replace(" ", "_")
-#     output_path = f"./output/recommended_news_{safe_keyword}_temp.csv"
-#     pd.DataFrame(results).to_csv(output_path, index=False)
-#     print(f"✅ 저장 완료: {output_path}")
-# 공유 디렉토리 보장
+
+    # 공유 디렉토리 보장
     os.makedirs("/shared", exist_ok=True)
 
     # 키워드 안전하게 변환

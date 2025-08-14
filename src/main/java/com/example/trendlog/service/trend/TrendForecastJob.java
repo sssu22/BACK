@@ -37,14 +37,22 @@ public class TrendForecastJob {
             trendScoreCsvExporter.exportAllTrendScoresToCsv();
 
             runProphetScript();
-
-            // 3) 예측 결과 CSV import (/shared/predicted_top3.csv)
-            importPredictionCsv();
-
         } catch (Exception e) {
             log.error("주간 예측 파이프라인 실패", e);
         }
     }
+
+    @Scheduled(cron = "0 40 2 * * MON", zone = "Asia/Seoul")
+    public void storeWeeklyForecast() {
+        try{
+            // 3) 예측 결과 CSV import (/shared/predicted_top3.csv)
+            importPredictionCsv();
+        }catch (Exception e){
+            log.error("예측 결과 저장 실패", e);
+        }
+
+    }
+
     public void runProphetScript(){
         // 2) FastAPI에 예측 실행 요청
         fastApiWebClient.post()

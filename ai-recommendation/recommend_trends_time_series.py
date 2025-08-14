@@ -10,7 +10,6 @@ CSV_IN  = "/shared/trend_scores.csv"
 CSV_OUT = "/shared/predicted_top3.csv"
 
 df = pd.read_csv(CSV_IN)
-# df = pd.read_csv(os.path.join(BASE_DIR, "trend_score.csv"))
 df["date"] = pd.to_datetime(df["date"])
 
 results = []
@@ -42,6 +41,5 @@ for trend_id in df["trend_id"].unique():
 
 # 결과 저장
 result_df = pd.DataFrame(results)
-# result_df.to_csv(os.path.join(BASE_DIR, "predicted_top3.csv"), index=False)
 result_df.to_csv(CSV_OUT, index=False)
 

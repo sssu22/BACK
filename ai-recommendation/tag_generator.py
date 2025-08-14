@@ -34,7 +34,6 @@ def merge_compounds(nouns):
 
 
 def extract_keywords(text, top_n=3):
-#     komoran = Komoran()
     komoran = get_komoran()  # lazy load 사용
     nouns = komoran.nouns(text)
     nouns = [n for n in nouns if len(n) > 1 and n not in STOPWORDS]

@@ -8,7 +8,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy.sparse import hstack
 import os
 
-# base_path = os.path.dirname(os.path.abspath(__file__))
 base_path = "/shared"
 
 interactions_path = os.path.join(base_path, 'trend_recommend_scores.csv')
@@ -54,7 +53,7 @@ train, test = random_train_test_split(interactions, test_percentage=0.2, random_
 model = LightFM(loss='warp')
 model.fit(train, item_features=item_features, epochs=10, num_threads=2)
 
-# --- 안전한 precision@k 계산 (유저 1명/테스트 상호작용 0개여도 에러 없이) ---
+# 안전한 precision@k 계산 (유저 1명/테스트 상호작용 0개여도 에러 없이)
 try:
     test_csr = test.tocsr()
     mask = np.ravel(test_csr.getnnz(axis=1)) > 0  # 테스트 상호작용이 있는 유저만
@@ -115,8 +114,6 @@ else:
 
 # 결과 저장: 추천이 0건이어도 헤더만 있는 CSV가 생성됨
 recommend_df = pd.DataFrame(recommendations, columns=['user_id', 'trend_id', 'score'])
-# output_path = os.path.join(base_path, 'recommended_trends.csv')
 output_path = "/shared/recommended_trends.csv"
 recommend_df.to_csv(output_path, index=False)
-# recommend_df.to_csv(output_path, index=False)
 print(f"추천 완료. '{output_path}' 저장됨. (행 수: {len(recommend_df)})")
