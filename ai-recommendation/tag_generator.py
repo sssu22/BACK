@@ -10,6 +10,18 @@ STOPWORDS = set([
     # 예: '대회', '참여', '최적화', '엄청난', '소개', '기술', ...
 ])
 
+# 전역 변수로 Komoran 인스턴스 캐싱
+_komoran = None
+
+def get_komoran():
+    """Komoran 최초 1회만 로드"""
+    global _komoran
+    if _komoran is None:
+        print("[MODEL] Loading Komoran...")
+        _komoran = Komoran()
+    return _komoran
+
+
 def merge_compounds(nouns):
     nouns_set = set(nouns)
     merged = nouns[:]
@@ -22,7 +34,8 @@ def merge_compounds(nouns):
 
 
 def extract_keywords(text, top_n=3):
-    komoran = Komoran()
+#     komoran = Komoran()
+    komoran = get_komoran()  # lazy load 사용
     nouns = komoran.nouns(text)
     nouns = [n for n in nouns if len(n) > 1 and n not in STOPWORDS]
 
