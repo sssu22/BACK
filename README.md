@@ -105,55 +105,6 @@
 </p>
 
 
-<!--
-### Backend
-<p>
-<img src="https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=Java&logoColor=white">
-<img src="https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=Spring%20Boot&logoColor=white">
-<img src="https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=Spring%20Security&logoColor=white">
-<img src="https://img.shields.io/badge/JPA-59666C?style=for-the-badge&logo=Hibernate&logoColor=white">
-<img src="https://img.shields.io/badge/QueryDSL-009688?style=for-the-badge">
-<img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white">
-</p>
-
-### Database & Infra
-<p>
-<img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=PostgreSQL&logoColor=white">
-<img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=Redis&logoColor=white">
-<img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white">
-<img src="https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=Amazon%20AWS&logoColor=white">
-<img src="https://img.shields.io/badge/AWS%20EC2-FF9900?style=for-the-badge&logo=Amazon%20EC2&logoColor=white">
-<img src="https://img.shields.io/badge/Google%20Cloud-4285F4?style=for-the-badge&logo=Google%20Cloud&logoColor=white">
-</p>
-
-### AI & ML
-<p>
-<img src="https://img.shields.io/badge/Prophet-025E8C?style=for-the-badge&logoColor=white">
-<img src="https://img.shields.io/badge/LightFM-FF6F00?style=for-the-badge&logoColor=white">
-<img src="https://img.shields.io/badge/sentence--transformers-2F2F2F?style=for-the-badge&logo=PyTorch&logoColor=white">
-<img src="https://img.shields.io/badge/Komoran-008000?style=for-the-badge&logoColor=white">
-<img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=FastAPI&logoColor=white">
-<img src="https://img.shields.io/badge/SQLAlchemy-D71F00?style=for-the-badge&logoColor=white">
-</p>
-
-### API
-<p>
-<img src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=OpenAI&logoColor=white">
-<img src="https://img.shields.io/badge/Naver%20News%20API-03C75A?style=for-the-badge&logo=Naver&logoColor=white">
-<img src="https://img.shields.io/badge/YouTube%20Search%20API-FF0000?style=for-the-badge&logo=YouTube&logoColor=white">
-<img src="https://img.shields.io/badge/Kakao%20Map%20API-FFCD00?style=for-the-badge&logo=Kakao&logoColor=black">
-<img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=black">
-</p>
-
-### 협업 & 관리
-<p>
-<img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white">
-<img src="https://img.shields.io/badge/GitHub%20Issues-181717?style=for-the-badge&logo=GitHub&logoColor=white">
-<img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white">
-<img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=Discord&logoColor=white">
-</p>
--->
-
 </br>
 
 ## 📂 프로젝트 구조
@@ -233,3 +184,11 @@
 
 ![trendlog 다이어그램 drawio (1)](https://github.com/user-attachments/assets/dbe556be-ecc9-4be5-947a-562723a08ff9)
 
+## 📑 API
+<p align="left">
+  <img width="497" height="761" alt="KakaoTalk_Photo_2025-08-14-15-22-24" src="https://github.com/user-attachments/assets/cce2f880-7823-4739-affe-ba1fe734dc92" />
+</p>
+
+<p align="left">
+  <img width="490" height="672" alt="KakaoTalk_Photo_2025-08-14-15-22-38" src="https://github.com/user-attachments/assets/eddd8963-3bf4-45cc-bfd1-489ff4647e8f" />
+</p>
