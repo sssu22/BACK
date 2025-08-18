@@ -8,7 +8,8 @@ public record PostPopularListResponse (
         String title,
         String trendTitle,
         int trendScore,
-        String tag
+        String tag,
+        String emotion
 ) {
     // from
     public static PostPopularListResponse from(PostStatistics postStat) {
@@ -18,7 +19,8 @@ public record PostPopularListResponse (
                 post.getTitle(),
                 post.getTrend().getTitle(),
                 post.getTrend().getScore(),
-                post.getTags().isEmpty() ? null : post.getTags().get(0).getTag().getName()
+                post.getTags().isEmpty() ? null : post.getTags().get(0).getTag().getName(),
+                post.getEmotion().name()
         );
     }
 }
