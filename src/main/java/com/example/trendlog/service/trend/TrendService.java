@@ -217,7 +217,7 @@ public class TrendService {
     /**
      * 최고 트렌드 저장(자정 기준)
      */
-    @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
+    @Scheduled(cron = "0 10 0 * * MON")
     @Transactional
     public void updatePopularTrends(){
         //최근 1주일 이내 생성된 트렌드 기준
@@ -250,7 +250,7 @@ public class TrendService {
     /**
      * 최근 트렌드 저장(6시간 기준)
      */
-    @Scheduled(cron = "0 0 0,6,12,18 * * ?") // 매일 0시, 6시, 12시, 18시에 실행
+    @Scheduled(cron = "0 10 0 * * MON")
     @Transactional
     public void updateRecentTrends(){
         LocalDateTime now = LocalDateTime.now();

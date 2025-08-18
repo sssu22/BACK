@@ -23,7 +23,7 @@ public class RecentTrendResponse {
                 .trendId(trend.getId())
                 .title(trend.getTitle())
                 .tag(firstTag)
-                .score(recentTrend.getTrendScore())
+                .score(recentTrend.getTrend().getScore())
                 .increaseScore(recentTrend.getIncreaseScore())
                 .build();
     }
