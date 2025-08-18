@@ -109,7 +109,7 @@ public class PostService {
             isScrapped = postScrapRepository.existsByUserIdAndPostId(userId, postId);
         }
 
-        return PostResponse.from(post, isLiked, isScrapped, postCommentService.getPostCommentList(user, postId));
+        return PostResponse.from(post, isScrapped, isLiked, postCommentService.getPostCommentList(user, postId));
     }
 
     // 인기 게시글 목록 조회
