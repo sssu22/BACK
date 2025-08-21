@@ -21,7 +21,7 @@ public class PopularTrendResponse {
                 .trendId(popularTrend.getTrend().getId())
                 .title(popularTrend.getName()) // 저장 당시 이름
                 .tag(firstTag)
-                .score(popularTrend.getTrendScore())
+                .score(popularTrend.getTrend().getScore())
                 .build();
     }
 }

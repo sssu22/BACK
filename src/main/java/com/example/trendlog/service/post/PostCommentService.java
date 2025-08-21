@@ -32,15 +32,14 @@ public class PostCommentService {
 
     // 게시글 댓글 목록 조회
     public List<PostCommentResponse> getPostCommentList(User user, Long postId) {
-        Post post = getPost(postId);
-        boolean isLiked;
-        if(user != null)
-            isLiked = postCommentLikeRepository.existsByUserIdAndPostCommentId(post.getUser().getId(), postId);
-        else {
-            isLiked = false;
-        }
         return postCommentRepository.findAllByPostIdAndDeletedFalseOrderByCreatedAt(postId).stream()
-                .map(p->PostCommentResponse.from(p,isLiked))
+                .map(comment -> {
+                    boolean isLiked = false;
+                    if (user != null) {
+                        isLiked = postCommentLikeRepository.existsByUserIdAndPostCommentId(user.getId(), comment.getId());
+                    }
+                    return PostCommentResponse.from(comment, isLiked);
+                })
                 .toList();
     }
 
@@ -70,7 +69,6 @@ public class PostCommentService {
         User user = findUser(principal);
         Post post = getPost(postId);
         PostComment postComment = getPostComment(commentId);
-
 
         if(postCommentLikeRepository.existsByUserIdAndPostCommentId(user.getId(), commentId)) {
             postCommentLikeRepository.deleteByUserIdAndPostCommentId(user.getId(), commentId);

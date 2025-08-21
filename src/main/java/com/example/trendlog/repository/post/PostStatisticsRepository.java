@@ -15,7 +15,7 @@ public interface PostStatisticsRepository extends JpaRepository<PostStatistics, 
     SELECT post_id,
            like_count + comment_count AS total_count
     FROM posts
-    WHERE created_at >= CURRENT_TIMESTAMP - INTERVAL '1 day' AND deleted = false
+    WHERE created_at >= CURRENT_TIMESTAMP - INTERVAL '7 day' AND deleted = false
     """, nativeQuery = true)
     void updateCommunityStatistics();
 
